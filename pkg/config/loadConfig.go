@@ -19,8 +19,12 @@ type AppConfig struct {
 }
 
 type DBConfig struct {
-	DBDriver string `mapstructure:"db_driver"`
-	DBSource string `mapstructure:"db_source"`
+	DBDriver   string `mapstructure:"db_driver"`
+	DBUser     string `mapstructure:"db_user"`
+	DBPassword string `mapstructure:"db_password"`
+	DBPort     int    `mapstructure:"db_port"`
+	DBName     string `mapstructure:"db_name"`
+	DBHost     string `mapstructure:"db_host"`
 }
 
 func LoadConfig() (config *Config, err error) {
