@@ -4,22 +4,25 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/CodeHanHan/ferry-backend/pkg/config"
+	"github.com/CodeHanHan/ferry-backend/db"
+	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/routers"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	config, err := config.LoadConfig()
-	if err != nil {
-		log.Fatalf("load config failed: %v", err)
-	}
+	// time.Sleep(time.Second * 10)
+
+	pi.SetUpPi()
+
+	db.SetUp()
+
 	r := routers.InitRouter()
 
 	gin.SetMode(gin.DebugMode)
 
 	server := &http.Server{
-		Addr:    config.Application.ServerAddress,
+		Addr:    pi.Global.Cfg.Application.ServerAddress,
 		Handler: r,
 	}
 

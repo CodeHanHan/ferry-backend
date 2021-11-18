@@ -1,17 +1,13 @@
 package db
 
 import (
-	"github.com/google/wire"
+	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	_ "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var ProviderSet = wire.NewSet(NewDatabase)
+var Store *gorm.DB
 
-type Database struct {
-	*gorm.DB
-}
-
-func NewDatabase(db *gorm.DB) *Database {
-	return &Database{db}
+func SetUp() {
+	Store = pi.Global.Mysql
 }
