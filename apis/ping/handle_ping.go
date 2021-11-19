@@ -8,6 +8,7 @@ import (
 
 	"github.com/CodeHanHan/ferry-backend/db/query/ping"
 	modelPing "github.com/CodeHanHan/ferry-backend/models/ping"
+	"github.com/CodeHanHan/ferry-backend/pkg/app"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
@@ -18,10 +19,11 @@ func HandlePing(c *gin.Context) {
 
 	record := modelPing.NewPingRecord(message, reply)
 
-	if err := ping.CreatePingRecord(record); err != nil {
-		logger.Error(err.Error())
-		c.String(http.StatusInternalServerError, err.Error()) // FIXME
+	if err := ping.CreatePingRecord(c, record); err != nil {
+		logger.Error(c, err.Error())
+		app.Error(c, http.StatusInternalServerError, "创建记录失败: %v", err.Error())
+		return
 	}
 
-	c.String(http.StatusOK, reply)
+	app.OK(c, reply)
 }

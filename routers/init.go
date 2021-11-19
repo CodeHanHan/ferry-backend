@@ -7,7 +7,7 @@ import (
 )
 
 func InitRouter() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
 
 	middleware.InitMiddleware(r)
 
