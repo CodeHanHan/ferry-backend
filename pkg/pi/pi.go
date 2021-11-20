@@ -3,10 +3,13 @@ package pi
 import (
 	"fmt"
 	"log"
+	"time"
 
-	"github.com/CodeHanHan/ferry-backend/pkg/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	dbLogger "github.com/CodeHanHan/ferry-backend/db/logger"
+	"github.com/CodeHanHan/ferry-backend/pkg/config"
 )
 
 type Pi struct {
@@ -16,7 +19,7 @@ type Pi struct {
 
 var Global *Pi
 
-func SetUpPi() {
+func SetUp() {
 	Global = &Pi{}
 
 	config, err := config.LoadConfig()
@@ -35,7 +38,9 @@ func (p *Pi) OpenMysql() {
 		p.Cfg.Database.DBPort,
 		p.Cfg.Database.DBName,
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: dbLogger.NewGormLogger(time.Millisecond * 500),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

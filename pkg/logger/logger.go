@@ -74,9 +74,10 @@ type Interface interface {
 }
 
 type Logger struct {
-	Level  LogLevel
-	output io.Writer
-	depth  int
+	Level         LogLevel
+	output        io.Writer
+	hideCallstack bool
+	depth         int
 }
 
 func (logger *Logger) level() LogLevel {
@@ -104,7 +105,7 @@ func (level LogLevel) Color() color {
 	return white
 }
 
-func (logger *Logger) formatOutput(level LogLevel, output string) string {
+func (logger *Logger) formatOutput(ctx context.Context, level LogLevel, output string) string {
 	now := time.Now().Format("2006-01-02 15:04:05")
 
 	_, file, line, ok := runtime.Caller(logger.depth)
@@ -131,52 +132,57 @@ func NewLogger() *Logger {
 	}
 }
 
-func (logger *Logger) logf(level LogLevel, format string, args ...interface{}) {
+func (logger *Logger) logf(ctx context.Context, level LogLevel, format string, args ...interface{}) {
 	if logger.Level < level {
 		return
 	}
 
-	fmt.Fprintf(logger.output, "%s %s\n %s", level.Color(), logger.formatOutput(level, fmt.Sprintf(format, args...)), reset)
+	fmt.Fprintf(logger.output, "%s %s\n %s", level.Color(), logger.formatOutput(ctx, level, fmt.Sprintf(format, args...)), reset)
 }
 
-func (logger *Logger) Info(format string, args ...interface{}) {
-	logger.logf(InfoLevel, format, args...)
+func (logger *Logger) Info(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, InfoLevel, format, args...)
 }
 
-func (logger *Logger) Warn(format string, args ...interface{}) {
-	logger.logf(WarnLevel, format, args...)
+func (logger *Logger) Warn(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, WarnLevel, format, args...)
 }
 
-func (logger *Logger) Error(format string, args ...interface{}) {
-	logger.logf(ErrorLevel, format, args...)
+func (logger *Logger) Error(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, ErrorLevel, format, args...)
 }
 
-func (logger *Logger) Debug(format string, args ...interface{}) {
-	logger.logf(DebugLevel, format, args...)
+func (logger *Logger) Debug(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, DebugLevel, format, args...)
 }
 
-func (logger *Logger) Critical(format string, args ...interface{}) {
-	logger.logf(CriticalLevel, format, args...)
+func (logger *Logger) Critical(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, CriticalLevel, format, args...)
 }
 
 var logger = NewLogger()
 
-func Info(format string, args ...interface{}) {
-	logger.Info(format, args...)
+func Info(ctx context.Context, format string, args ...interface{}) {
+	logger.Info(ctx, format, args...)
 }
 
-func Debug(format string, args ...interface{}) {
-	logger.Debug(format, args...)
+func Debug(ctx context.Context, format string, args ...interface{}) {
+	logger.Debug(ctx, format, args...)
 }
 
-func Warn(format string, args ...interface{}) {
-	logger.Warn(format, args...)
+func Warn(ctx context.Context, format string, args ...interface{}) {
+	logger.Warn(ctx, format, args...)
 }
 
-func Error(format string, args ...interface{}) {
-	logger.Error(format, args...)
+func Error(ctx context.Context, format string, args ...interface{}) {
+	logger.Error(ctx, format, args...)
 }
 
-func Critical(format string, args ...interface{}) {
-	logger.Critical(format, args...)
+func Critical(ctx context.Context, format string, args ...interface{}) {
+	logger.Critical(ctx, format, args...)
+}
+
+func (logger *Logger) HideCallstack() *Logger {
+	logger.hideCallstack = true
+	return logger
 }
