@@ -1,11 +1,16 @@
 version: v0.0.1
+mode: dev
 application:
   server_address: 0.0.0.0:10000
 database:
-  db_driver: mysql
-  # db_source: mysql://root:codehanhan@tcp(localhost:13306)/ferry
-  db_user: root
-  db_password: codehanhan
-  db_port: 13306
-  db_name: ferry
-  db_host: localhost
+  level: 1 # 1: Silent, 2: Error, 3: Warn, 4: Info
+  driver: mysql
+  user: root
+  password: codehanhan
+  port: 13306
+  name: ferry
+  host: localhost
+  parse_time: true
+author:
+  - yangchnet
+  - HT-CHEN520

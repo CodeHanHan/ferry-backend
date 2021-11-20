@@ -19,7 +19,7 @@ func InitRouter() *gin.Engine {
 func InitSysRouter(r *gin.Engine) *gin.RouterGroup {
 	g := r.Group("")
 
-	ping.PingRouter(g)
+	ping.RegisterPingRouter(g)
 
 	return g
 }

@@ -16,3 +16,12 @@ func CreatePingRecord(ctx context.Context, record *ping.PingRecord) error {
 
 	return nil
 }
+
+func PagePingRecords(ctx context.Context, offset, limit int) ([]*ping.PingRecord, error) {
+	var ans []*ping.PingRecord = make([]*ping.PingRecord, 0)
+	if err := db.Store.Table(ping.PingRecordTableName).Limit(limit).Offset(offset).Find(&ans).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+	return ans, nil
+}
