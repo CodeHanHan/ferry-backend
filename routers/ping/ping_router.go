@@ -5,6 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PingRouter(r *gin.RouterGroup) {
-	r.POST("/ping", ping.HandlePing)
+func RegisterPingRouter(g *gin.RouterGroup) {
+	pingGroup := g.Group("/ping")
+	{
+		pingGroup.POST("/create", ping.Ping)
+		pingGroup.GET("/list", ping.ListPing)
+	}
 }

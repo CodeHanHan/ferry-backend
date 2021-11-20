@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
 
 	dbLogger "github.com/CodeHanHan/ferry-backend/db/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/config"
@@ -31,15 +32,18 @@ func SetUp() {
 }
 
 func (p *Pi) OpenMysql() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=%v",
 		p.Cfg.Database.DBUser,
 		p.Cfg.Database.DBPassword,
 		p.Cfg.Database.DBHost,
 		p.Cfg.Database.DBPort,
 		p.Cfg.Database.DBName,
+		p.Cfg.Database.ParseTime,
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: dbLogger.NewGormLogger(time.Millisecond * 500),
+		Logger: dbLogger.
+			NewGormLogger(time.Millisecond * 500).
+			LogMode(gormLogger.LogLevel(p.Cfg.Database.LoggerLevel)),
 	})
 	if err != nil {
 		log.Fatal(err)

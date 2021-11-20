@@ -10,8 +10,10 @@ const (
 
 type Config struct {
 	Version     string    `mapstructure:"version"`
+	Mode        string    `mapstructure:"mode"`
 	Application AppConfig `mapstructure:"application"`
 	Database    DBConfig  `mapstructure:"database"`
+	Author      []string  `mapstructure:"author"`
 }
 
 type AppConfig struct {
@@ -19,12 +21,14 @@ type AppConfig struct {
 }
 
 type DBConfig struct {
-	DBDriver   string `mapstructure:"db_driver"`
-	DBUser     string `mapstructure:"db_user"`
-	DBPassword string `mapstructure:"db_password"`
-	DBPort     int    `mapstructure:"db_port"`
-	DBName     string `mapstructure:"db_name"`
-	DBHost     string `mapstructure:"db_host"`
+	DBDriver    string `mapstructure:"driver"`
+	LoggerLevel int    `mapstructure:"level"`
+	DBUser      string `mapstructure:"user"`
+	DBPassword  string `mapstructure:"password"`
+	DBPort      int    `mapstructure:"port"`
+	DBName      string `mapstructure:"name"`
+	DBHost      string `mapstructure:"host"`
+	ParseTime   bool   `mapstructure:"parse_time"`
 }
 
 func LoadConfig() (config *Config, err error) {

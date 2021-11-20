@@ -1,4 +1,4 @@
-up:
+dev-up:
 	@go build -o debug-main main.go && ./debug-main
 
 build-db:
