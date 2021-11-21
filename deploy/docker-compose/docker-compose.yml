@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  ferry-db:
+    image: ferry-mysql:latest
+    container_name: ferry-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ~/.ferry-data/mysql:/var/lib/mysql
+    ports:
+      - ${MYSQL_PORT}:3306
+    restart: always
+
+  ferry-main:
+    image: ferry-main:latest
+    container_name: ferry-main
+    ports: 
+      - 10001:10000
+    restart: on-failure
+    depends_on:
+      - ferry-db

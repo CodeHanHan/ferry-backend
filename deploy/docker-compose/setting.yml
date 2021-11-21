@@ -1,0 +1,17 @@
+version: v0.0.1
+mode: dev
+application:
+  server_address: 0.0.0.0:10000
+database:
+  level: 1 # 1: Silent, 2: Error, 3: Warn, 4: Info
+  driver: mysql
+  user: root
+  password: codehanhan
+  port: 3306
+  name: ferry
+  # host: localhost
+  host: ferry-db
+  parse_time: true
+author:
+  - yangchnet
+  - HT-CHEN520
