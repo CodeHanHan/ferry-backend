@@ -1,9 +1,13 @@
 package routers
 
 import (
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+
+	_ "github.com/CodeHanHan/ferry-backend/docs"
 	"github.com/CodeHanHan/ferry-backend/middleware"
 	"github.com/CodeHanHan/ferry-backend/routers/ping"
-	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
@@ -11,12 +15,15 @@ func InitRouter() *gin.Engine {
 
 	middleware.InitMiddleware(r)
 
-	InitSysRouter(r)
+	v1 := r.Group("/api/v1")
+
+	InitSysRouter(v1)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }
 
-func InitSysRouter(r *gin.Engine) *gin.RouterGroup {
+func InitSysRouter(r *gin.RouterGroup) *gin.RouterGroup {
 	g := r.Group("")
 
 	ping.RegisterPingRouter(g)
