@@ -9,6 +9,16 @@ import (
 	"github.com/CodeHanHan/ferry-backend/routers"
 )
 
+// @title Ferry API
+// @version v0.0.1
+// @description 工单系统
+
+// @host localhost:10000
+// @BasePath /api/v1
+
+// @securityDefinitions.apikey JWT
+// @in header
+// @name Authorization Bearer
 func main() {
 	// time.Sleep(time.Second * 10)
 

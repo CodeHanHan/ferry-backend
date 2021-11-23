@@ -1,0 +1,77 @@
+basePath: /api/v1
+definitions:
+  ping.PingRecord:
+    properties:
+      createTime:
+        type: string
+      message:
+        type: string
+      pingID:
+        type: string
+      reply:
+        type: string
+    type: object
+host: localhost:10000
+info:
+  contact: {}
+  description: 工单系统
+  title: Ferry API
+  version: v0.0.1
+paths:
+  /ping/create:
+    post:
+      consumes:
+      - application/json
+      description: 接收一个字符串，返回这个字符串加上", too"后缀
+      operationId: ping
+      parameters:
+      - description: any string
+        in: query
+        name: message
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 测试服务是否正常启动
+      tags:
+      - ping
+  /ping/list:
+    get:
+      consumes:
+      - application/json
+      description: 接收偏移和限制量，返回对应的ping记录
+      operationId: list-ping
+      parameters:
+      - description: 偏移量
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: 每页记录数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ping.PingRecord'
+            type: array
+      summary: 分页获取ping的记录信息
+      tags:
+      - ping
+securityDefinitions:
+  JWT:
+    in: header
+    name: Authorization Bearer
+    type: apiKey
+swagger: "2.0"

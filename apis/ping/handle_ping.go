@@ -12,6 +12,16 @@ import (
 	"github.com/CodeHanHan/ferry-backend/pkg/form"
 )
 
+// Ping godoc
+// @Summary 测试服务是否正常启动
+// @Description 接收一个字符串，返回这个字符串加上", too"后缀
+// @Tags ping
+// @ID ping
+// @Param message query string true "any string"
+// @Success 200 {string} string
+// @Accept  json
+// @Produce  json
+// @Router /ping/create [post]
 func Ping(c *gin.Context) {
 	// 1. 验证参数
 	var req form.PingRequest
@@ -22,6 +32,8 @@ func Ping(c *gin.Context) {
 
 	// 2. 获取参数
 	message := req.Message
+
+	// message := c.Query("message")
 
 	// 3. 逻辑处理，生成回复信息
 	reply := fmt.Sprintf("%s, too", message)
@@ -38,6 +50,17 @@ func Ping(c *gin.Context) {
 	app.OK(c, reply)
 }
 
+// ListPing godoc
+// @Summary 分页获取ping的记录信息
+// @Description 接收偏移和限制量，返回对应的ping记录
+// @Tags ping
+// @ID list-ping
+// @Param offset query int true "偏移量"
+// @Param limit query int true "每页记录数"
+// @Success 200 {object} []modelPing.PingRecord
+// @Accept  json
+// @Produce  json
+// @Router /ping/list [get]
 func ListPing(c *gin.Context) {
 	var req form.ListPingRequest
 	if err := c.ShouldBind(&req); err != nil {

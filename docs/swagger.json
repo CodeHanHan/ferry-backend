@@ -1,0 +1,115 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "工单系统",
+        "title": "Ferry API",
+        "contact": {},
+        "version": "v0.0.1"
+    },
+    "host": "localhost:10000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/ping/create": {
+            "post": {
+                "description": "接收一个字符串，返回这个字符串加上\", too\"后缀",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "测试服务是否正常启动",
+                "operationId": "ping",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "any string",
+                        "name": "message",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping/list": {
+            "get": {
+                "description": "接收偏移和限制量，返回对应的ping记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "分页获取ping的记录信息",
+                "operationId": "list-ping",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "偏移量",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页记录数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ping.PingRecord"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ping.PingRecord": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pingID": {
+                    "type": "string"
+                },
+                "reply": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "JWT": {
+            "type": "apiKey",
+            "name": "Authorization Bearer",
+            "in": "header"
+        }
+    }
+}
