@@ -3,6 +3,8 @@ module github.com/CodeHanHan/ferry-backend
 go 1.16
 
 require (
+	github.com/casbin/casbin/v2 v2.39.1 // indirect
+	github.com/casbin/gorm-adapter/v3 v3.4.6 // indirect
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.1.0
@@ -12,5 +14,5 @@ require (
 	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.4
 	gorm.io/driver/mysql v1.1.3
-	gorm.io/gorm v1.22.2
+	gorm.io/gorm v1.22.3
 )

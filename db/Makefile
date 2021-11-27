@@ -7,10 +7,19 @@ build:
 	@docker build -t ferry-mysql .
 
 migrate-up:
-	@migrate -source=file://schema/ping -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose up
+	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose up
 
 migrate-down:
-	@migrate -source=file://schema/ping -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose down
+	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose down
+
+migrate-up-%:
+	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose up $*
+
+migrate-down-%:
+	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose down $*
+
+migrate-to-%:
+	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose goto $*
 
 .PHONY: up, build
 
