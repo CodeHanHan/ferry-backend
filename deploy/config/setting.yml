@@ -11,6 +11,9 @@ database:
   name: ferry
   host: localhost
   parse_time: true
+jwt:
+  secret: codehanhan
+  timeout: 86400
 author:
   - yangchnet
   - HT-CHEN520
