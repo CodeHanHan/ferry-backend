@@ -13,6 +13,7 @@ type Config struct {
 	Mode        string    `mapstructure:"mode"`
 	Application AppConfig `mapstructure:"application"`
 	Database    DBConfig  `mapstructure:"database"`
+	Jwt         JWTConfig `mapstructure:"jwt"`
 	Author      []string  `mapstructure:"author"`
 }
 
@@ -29,6 +30,11 @@ type DBConfig struct {
 	DBName      string `mapstructure:"name"`
 	DBHost      string `mapstructure:"host"`
 	ParseTime   bool   `mapstructure:"parse_time"`
+}
+
+type JWTConfig struct {
+	Secret  string `mapstructure:"secret"`
+	Timeout string `mapstructure:"timeout"`
 }
 
 func LoadConfig() (config *Config, err error) {
