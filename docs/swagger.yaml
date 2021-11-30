@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  form.LoginResponse:
+    properties:
+      duration:
+        type: integer
+      token:
+        type: string
+    type: object
   ping.PingRecord:
     properties:
       createTime:
@@ -18,6 +25,33 @@ info:
   title: Ferry API
   version: v0.0.1
 paths:
+  /login:
+    get:
+      consumes:
+      - application/json
+      description: 获取token
+      operationId: user-login
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.LoginResponse'
+      summary: 用户名密码登录
+      tags:
+      - user
   /ping/create:
     post:
       consumes:
@@ -91,38 +125,27 @@ paths:
       summary: 分页获取ping的记录信息
       tags:
       - ping
-  /user/login:
-    post:
+  /user/me:
+    get:
       consumes:
       - application/json
-      description: 账号密码登录(测试)
-      operationId: user-login
-      parameters:
-      - description: any string
-        in: query
-        name: username
-        required: true
-        type: string
-      - description: any string
-        in: query
-        name: password
-        required: true
-        type: string
+      description: 用户查看个人信息
+      operationId: user-me
       produces:
       - application/json
       responses:
         "200":
-          description: '{"code": 200, "expire": "2019-08-07T12:45:48+08:00", "token":
-            ".eyJleHAiOjE1NjUxNTMxNDgsImlkIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTU2NTE0OTU0OH0.-zvzHvbg0A"
-            }'
+          description: OK
           schema:
             type: string
-      summary: 用户登录，获取token
+      security:
+      - BearerAuth: []
+      summary: 查看个人信息
       tags:
       - user
 securityDefinitions:
-  JWT:
+  BearerAuth:
     in: header
-    name: Authorization Bearer
+    name: Authorization
     type: apiKey
 swagger: "2.0"

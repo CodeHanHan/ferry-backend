@@ -16,9 +16,9 @@ import (
 // @host localhost:10000
 // @BasePath /api/v1
 
-// @securityDefinitions.apikey JWT
+// @securityDefinitions.apikey BearerAuth
 // @in header
-// @name Authorization Bearer
+// @name Authorization
 func main() {
 	// time.Sleep(time.Second * 10)
 
