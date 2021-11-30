@@ -5,6 +5,10 @@ type PingRequest struct {
 }
 
 type ListPingRequest struct {
-	Offset int `form:"offset" binding:"gte=-1"`
+	Offset int `form:"offset" binding:"required,gte=-1"`
 	Limit  int `form:"limit" binding:"required,gte=0"`
+}
+
+type DeletePingRequest struct {
+	PingID string `form:"ping_id" binding:"required"`
 }

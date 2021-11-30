@@ -11,3 +11,5 @@ var Store *gorm.DB
 func SetUp() {
 	Store = pi.Global.Mysql
 }
+
+

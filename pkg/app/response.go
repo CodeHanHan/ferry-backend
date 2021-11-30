@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
+
+	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
 func Error(c *gin.Context, err error, code int, format string, values ...interface{}) {

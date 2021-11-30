@@ -10,5 +10,9 @@ func RegisterPingRouter(g *gin.RouterGroup) {
 	{
 		pingGroup.POST("/create", ping.Ping)
 		pingGroup.GET("/list", ping.ListPing)
+		// delete
+		pingGroup.DELETE("/delete", ping.DeletePing)
+		// update
+
 	}
 }
