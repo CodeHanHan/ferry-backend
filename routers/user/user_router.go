@@ -1,13 +1,13 @@
 package user
 
 import (
-	"github.com/CodeHanHan/ferry-backend/pkg/jwtauth"
+	"github.com/CodeHanHan/ferry-backend/apis/user"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRouter(g *gin.RouterGroup, authMiddleware *jwtauth.GinJWTMiddleware) {
-	pingGroup := g.Group("/user")
+func RegisterUserRouter(g *gin.RouterGroup, authMiddleware gin.HandlerFunc) {
+	pingGroup := g.Group("/user").Use(authMiddleware)
 	{
-		pingGroup.POST("/login", authMiddleware.LoginHandler)
+		pingGroup.GET("/me", user.Profile)
 	}
 }

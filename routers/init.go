@@ -1,16 +1,14 @@
 package routers
 
 import (
-	"context"
-
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 
+	userApis "github.com/CodeHanHan/ferry-backend/apis/user"
 	_ "github.com/CodeHanHan/ferry-backend/docs"
 	"github.com/CodeHanHan/ferry-backend/middleware"
-	"github.com/CodeHanHan/ferry-backend/pkg/jwtauth"
-	"github.com/CodeHanHan/ferry-backend/pkg/logger"
+	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/routers/ping"
 	"github.com/CodeHanHan/ferry-backend/routers/user"
 )
@@ -20,24 +18,31 @@ func InitRouter() *gin.Engine {
 
 	middleware.InitMiddleware(r)
 
-	authMiddleware, err := middleware.AuthInit()
-	if err != nil {
-		logger.Error(context.Background(), "init auth middleware failed: %v", err)
-		panic(err)
-	}
-
 	v1 := r.Group("/api/v1")
 
-	InitSysRouter(v1, authMiddleware)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	InitSwaggerRouter(v1)
+
+	InitNoCheckRouter(v1)
+
+	authMiddleware := middleware.AuthMiddleware(pi.Global.TokenMaker)
+
+	InitAuthSysRouter(v1, authMiddleware)
 
 	return r
 }
 
-func InitSysRouter(r *gin.RouterGroup, authMiddleware *jwtauth.GinJWTMiddleware) *gin.RouterGroup {
-	g := r.Group("")
+func InitSwaggerRouter(g *gin.RouterGroup) {
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
 
+func InitNoCheckRouter(g *gin.RouterGroup) {
 	ping.RegisterPingRouter(g)
+}
+
+func InitAuthSysRouter(r *gin.RouterGroup, authMiddleware gin.HandlerFunc) *gin.RouterGroup {
+	g := r.Group("")
+	g.GET("/login", userApis.Login)
+
 	user.RegisterUserRouter(g, authMiddleware)
 
 	return g

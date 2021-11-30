@@ -23,6 +23,46 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/login": {
+            "get": {
+                "description": "获取token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户名密码登录",
+                "operationId": "user-login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/ping/create": {
             "post": {
                 "description": "接收一个字符串，返回这个字符串加上\", too\"后缀",
@@ -132,9 +172,14 @@ var doc = `{
                 }
             }
         },
-        "/user/login": {
-            "post": {
-                "description": "账号密码登录(测试)",
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "用户查看个人信息",
                 "consumes": [
                     "application/json"
                 ],
@@ -144,27 +189,11 @@ var doc = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "用户登录，获取token",
-                "operationId": "user-login",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "any string",
-                        "name": "username",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "any string",
-                        "name": "password",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "查看个人信息",
+                "operationId": "user-me",
                 "responses": {
                     "200": {
-                        "description": "{\"code\": 200, \"expire\": \"2019-08-07T12:45:48+08:00\", \"token\": \".eyJleHAiOjE1NjUxNTMxNDgsImlkIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTU2NTE0OTU0OH0.-zvzHvbg0A\" }",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -174,6 +203,17 @@ var doc = `{
         }
     },
     "definitions": {
+        "form.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "ping.PingRecord": {
             "type": "object",
             "properties": {
@@ -193,9 +233,9 @@ var doc = `{
         }
     },
     "securityDefinitions": {
-        "JWT": {
+        "BearerAuth": {
             "type": "apiKey",
-            "name": "Authorization Bearer",
+            "name": "Authorization",
             "in": "header"
         }
     }

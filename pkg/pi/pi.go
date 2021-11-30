@@ -1,8 +1,8 @@
 package pi
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -11,11 +11,14 @@ import (
 
 	dbLogger "github.com/CodeHanHan/ferry-backend/db/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/config"
+	"github.com/CodeHanHan/ferry-backend/pkg/logger"
+	"github.com/CodeHanHan/ferry-backend/pkg/token"
 )
 
 type Pi struct {
-	Cfg   *config.Config
-	Mysql *gorm.DB
+	Cfg        *config.Config
+	Mysql      *gorm.DB
+	TokenMaker token.Maker
 }
 
 var Global *Pi
@@ -25,10 +28,12 @@ func SetUp() {
 
 	config, err := config.LoadConfig()
 	if err != nil {
-		log.Fatalf("load config failed: %v", err)
+		logger.Critical(context.Background(), "load config failed: %v", err)
+		panic(err)
 	}
 	Global.Cfg = config
 	Global.OpenMysql()
+	Global.SetUpTokenMaker()
 }
 
 func (p *Pi) OpenMysql() {
@@ -46,8 +51,18 @@ func (p *Pi) OpenMysql() {
 			LogMode(gormLogger.LogLevel(p.Cfg.Database.LoggerLevel)),
 	})
 	if err != nil {
-		log.Fatal(err)
+		logger.Critical(context.Background(), "failed to connect to database: %v", err)
+		panic(err)
 	}
 
 	p.Mysql = db
+}
+
+func (p *Pi) SetUpTokenMaker() {
+	tokenMaker, err := token.NewJWTMaker(p.Cfg.Jwt.Secret)
+	if err != nil {
+		logger.Critical(context.Background(), "failed to create token maker: %v", err)
+		panic(err)
+	}
+	p.TokenMaker = tokenMaker
 }

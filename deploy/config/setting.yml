@@ -12,7 +12,7 @@ database:
   host: localhost
   parse_time: true
 jwt:
-  secret: codehanhan
+  secret: 326c9f73b0f45705a73eb020a32d790a
   timeout: 86400
 author:
   - yangchnet
