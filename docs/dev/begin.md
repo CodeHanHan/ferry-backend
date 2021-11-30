@@ -11,7 +11,7 @@
 │   ├── query  // 数据库查询
 │   └── schema  // 数据库表定义
 ├── deploy  // 部署、配置相关
-│   ├── config  // 项目配置
+│   ├── 配置config  // 项目
 │   └── docker-compose  // docker-compose部署
 ├── doc // 文档
 ├── middleware  // 中间件

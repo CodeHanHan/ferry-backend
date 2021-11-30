@@ -76,3 +76,28 @@ func ListPing(c *gin.Context) {
 
 	app.OK(c, records)
 }
+
+// DeletePing godoc
+// @Summary 删除记录信息
+// @Description 接收主键PingID,根据PingID删除该条记录
+// @Tags ping
+// @ID delete_ping
+// @Param ping_id query string true "any string"
+// @Success 200 {string} string
+// @Accept  json
+// @Produce  json
+// @Router /ping/delete [delete]
+func DeletePing(c *gin.Context) {
+	var req form.DeletePingRequest
+	if err := c.ShouldBind(&req); err != nil {
+		app.ErrorParams(c, err)
+		return
+	}
+
+	if err := ping.DeletePingRecord(c, req.PingID); err != nil {
+		app.Error(c, err, http.StatusBadRequest, "删除失败")
+		return
+	}
+
+	app.OK(c, "success")
+}

@@ -40,6 +40,28 @@ paths:
       summary: 测试服务是否正常启动
       tags:
       - ping
+  /ping/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 接收主键PingID,根据PingID删除该条记录
+      operationId: delete_ping
+      parameters:
+      - description: any string
+        in: query
+        name: ping_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 删除记录信息
+      tags:
+      - ping
   /ping/list:
     get:
       consumes:

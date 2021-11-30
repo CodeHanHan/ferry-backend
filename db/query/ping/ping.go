@@ -25,3 +25,12 @@ func PagePingRecords(ctx context.Context, offset, limit int) ([]*ping.PingRecord
 	}
 	return ans, nil
 }
+
+func DeletePingRecord(ctx context.Context, pk string) error {
+	if err := db.Store.Table(ping.PingRecordTableName).Where("ping_id = ?", pk).Delete(&ping.PingRecord{}).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+
+	return nil
+}
