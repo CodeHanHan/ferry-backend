@@ -13,6 +13,6 @@ func RegisterPingRouter(g *gin.RouterGroup) {
 		// delete
 		pingGroup.DELETE("/delete", ping.DeletePing)
 		// update
-
+		pingGroup.PUT("/update", ping.UpdatePing)
 	}
 }

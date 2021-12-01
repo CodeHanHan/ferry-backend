@@ -101,3 +101,30 @@ func DeletePing(c *gin.Context) {
 
 	app.OK(c, "success")
 }
+
+// UpdatePing godoc
+// @Summary 更新记录信息
+// @Description 接收主键PingID,根据PingID更新该条记录的message
+// @Tags ping
+// @ID update_ping
+// @Param ping_id query string true "any string"
+// @Param updatemessage query string true "any string"
+// @Success 200 {string} string
+// @Accept  json
+// @Produce  json
+// @Router /ping/update [put]
+func UpdatePing(c *gin.Context) {
+
+	var req form.UpdatePingRequest
+	if err := c.ShouldBind(&req); err != nil {
+		app.ErrorParams(c, err)
+		return
+	}
+	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
+	if err := ping.UpdatePingRecord(c, req.PingID, req.UpdateMessage, reply); err != nil {
+		app.Error(c, err, http.StatusBadRequest, "更新失败")
+		return
+	}
+
+	app.OK(c, "更新成功")
+}

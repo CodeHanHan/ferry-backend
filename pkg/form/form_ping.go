@@ -12,3 +12,8 @@ type ListPingRequest struct {
 type DeletePingRequest struct {
 	PingID string `form:"ping_id" binding:"required"`
 }
+
+type UpdatePingRequest struct {
+	PingID        string `form:"ping_id" binding:"required"`
+	UpdateMessage string `form:"updatemessage" binding:"required"`
+}
