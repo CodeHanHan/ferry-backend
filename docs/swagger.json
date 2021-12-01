@@ -158,6 +158,46 @@
                 }
             }
         },
+        "/ping/update": {
+            "put": {
+                "description": "接收主键PingID,根据PingID更新该条记录的message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "更新记录信息",
+                "operationId": "update_ping",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "any string",
+                        "name": "ping_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "any string",
+                        "name": "updatemessage",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/me": {
             "get": {
                 "security": [

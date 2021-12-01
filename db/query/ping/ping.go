@@ -34,3 +34,12 @@ func DeletePingRecord(ctx context.Context, pk string) error {
 
 	return nil
 }
+
+func UpdatePingRecord(ctx context.Context, pk string, message string, reply string) error {
+	if err := db.Store.Table(ping.PingRecordTableName).Where("ping_id = ?", pk).Updates(map[string]interface{}{"message": message, "reply": reply}).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+
+	return nil
+}

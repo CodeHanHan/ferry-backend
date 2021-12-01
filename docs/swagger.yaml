@@ -125,6 +125,33 @@ paths:
       summary: 分页获取ping的记录信息
       tags:
       - ping
+  /ping/update:
+    put:
+      consumes:
+      - application/json
+      description: 接收主键PingID,根据PingID更新该条记录的message
+      operationId: update_ping
+      parameters:
+      - description: any string
+        in: query
+        name: ping_id
+        required: true
+        type: string
+      - description: any string
+        in: query
+        name: updatemessage
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 更新记录信息
+      tags:
+      - ping
   /user/me:
     get:
       consumes:
