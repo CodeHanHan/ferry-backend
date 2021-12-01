@@ -21,7 +21,7 @@ migrate-down:
 
 # 指定版本数据库迁移
 migrate-to-%:
-	@cd db && make migrate-to-%*
+	@cd db && make migrate-to-$*
 
 # 构建数据库、应用镜像
 build-images:

@@ -37,17 +37,20 @@ type JWTConfig struct {
 	Timeout string `mapstructure:"timeout"`
 }
 
-func LoadConfig() (config *Config, err error) {
+func SetUp(register func(*Config)) error {
 	viper.AddConfigPath(ConfigPath)
 	viper.SetConfigName("setting")
 	viper.SetConfigType("yml")
 
-	if err = viper.ReadInConfig(); err != nil {
-		panic(err)
+	var config *Config = &Config{}
+	if err := viper.ReadInConfig(); err != nil {
+		return err
 	}
 
-	if err = viper.Unmarshal(&config); err != nil {
-		panic(err)
+	if err := viper.Unmarshal(&config); err != nil {
+		return err
 	}
-	return
+
+	register(config)
+	return nil
 }

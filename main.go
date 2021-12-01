@@ -22,13 +22,13 @@ import (
 func main() {
 	// time.Sleep(time.Second * 10)
 
-	pi.SetUp()
+	if err := pi.SetUp(); err != nil {
+		panic(err)
+	}
 
 	db.SetUp()
 
 	r := routers.InitRouter()
-
-	// gin.SetMode(gin.DebugMode)
 
 	server := &http.Server{
 		Addr:    pi.Global.Cfg.Application.ServerAddress,

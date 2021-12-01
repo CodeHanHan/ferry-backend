@@ -1,68 +1,63 @@
 package pi
 
 import (
-	"context"
 	"fmt"
-	"time"
 
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	gormLogger "gorm.io/gorm/logger"
 
-	dbLogger "github.com/CodeHanHan/ferry-backend/db/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/config"
-	"github.com/CodeHanHan/ferry-backend/pkg/logger"
+	"github.com/CodeHanHan/ferry-backend/pkg/mycasbin"
 	"github.com/CodeHanHan/ferry-backend/pkg/token"
+	"github.com/CodeHanHan/ferry-backend/pkg/xmysql"
+	"github.com/casbin/casbin/v2"
 )
 
 type Pi struct {
 	Cfg        *config.Config
 	Mysql      *gorm.DB
 	TokenMaker token.Maker
+	Casbin     *casbin.Enforcer
 }
 
 var Global *Pi
 
-func SetUp() {
+func SetUp() error {
 	Global = &Pi{}
 
-	config, err := config.LoadConfig()
-	if err != nil {
-		logger.Critical(context.Background(), "load config failed: %v", err)
-		panic(err)
-	}
-	Global.Cfg = config
-	Global.OpenMysql()
-	Global.SetUpTokenMaker()
-}
-
-func (p *Pi) OpenMysql() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=%v",
-		p.Cfg.Database.DBUser,
-		p.Cfg.Database.DBPassword,
-		p.Cfg.Database.DBHost,
-		p.Cfg.Database.DBPort,
-		p.Cfg.Database.DBName,
-		p.Cfg.Database.ParseTime,
-	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: dbLogger.
-			NewGormLogger(time.Millisecond * 500).
-			LogMode(gormLogger.LogLevel(p.Cfg.Database.LoggerLevel)),
-	})
-	if err != nil {
-		logger.Critical(context.Background(), "failed to connect to database: %v", err)
-		panic(err)
+	// load config
+	if err := config.SetUp(func(cfg *config.Config) {
+		Global.Cfg = cfg
+	}); err != nil {
+		return err
 	}
 
-	p.Mysql = db
-}
-
-func (p *Pi) SetUpTokenMaker() {
-	tokenMaker, err := token.NewJWTMaker(p.Cfg.Jwt.Secret)
-	if err != nil {
-		logger.Critical(context.Background(), "failed to create token maker: %v", err)
-		panic(err)
+	// setup mysql
+	if err := xmysql.SetUp(func(db *gorm.DB) {
+		Global.Mysql = db
+	}, fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=%v",
+		Global.Cfg.Database.DBUser,
+		Global.Cfg.Database.DBPassword,
+		Global.Cfg.Database.DBHost,
+		Global.Cfg.Database.DBPort,
+		Global.Cfg.Database.DBName,
+		Global.Cfg.Database.ParseTime,
+	), Global.Cfg.Database.LoggerLevel); err != nil {
+		return err
 	}
-	p.TokenMaker = tokenMaker
+
+	// setup token maker
+	if err := token.SetUp(func(maker token.Maker) {
+		Global.TokenMaker = maker
+	}, Global.Cfg.Jwt.Secret); err != nil {
+		return nil
+	}
+
+	// setup permissions check tools
+	if err := mycasbin.SetUp(func(e *casbin.Enforcer) {
+		Global.Casbin = e
+	}, Global.Mysql); err != nil {
+		return err
+	}
+
+	return nil
 }

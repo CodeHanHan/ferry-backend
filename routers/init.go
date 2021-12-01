@@ -25,8 +25,9 @@ func InitRouter() *gin.Engine {
 	InitNoCheckRouter(v1)
 
 	authMiddleware := middleware.AuthMiddleware(pi.Global.TokenMaker)
+	roleMiddleware := middleware.CheckRole()
 
-	InitAuthSysRouter(v1, authMiddleware)
+	InitAuthSysRouter(v1, authMiddleware, roleMiddleware)
 
 	return r
 }
@@ -39,11 +40,11 @@ func InitNoCheckRouter(g *gin.RouterGroup) {
 	ping.RegisterPingRouter(g)
 }
 
-func InitAuthSysRouter(r *gin.RouterGroup, authMiddleware gin.HandlerFunc) *gin.RouterGroup {
+func InitAuthSysRouter(r *gin.RouterGroup, authMdw, roleMdw gin.HandlerFunc) *gin.RouterGroup {
 	g := r.Group("")
 	g.GET("/login", userApis.Login)
 
-	user.RegisterUserRouter(g, authMiddleware)
+	user.RegisterUserRouter(g, authMdw, roleMdw)
 
 	return g
 }
