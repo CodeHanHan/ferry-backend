@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRouter(g *gin.RouterGroup, authMiddleware gin.HandlerFunc) {
-	pingGroup := g.Group("/user").Use(authMiddleware)
+func RegisterUserRouter(g *gin.RouterGroup, authMiddleware gin.HandlerFunc, roleMiddleware gin.HandlerFunc) {
+	pingGroup := g.Group("/user").Use(authMiddleware).Use(roleMiddleware)
 	{
 		pingGroup.GET("/me", user.Profile)
 	}

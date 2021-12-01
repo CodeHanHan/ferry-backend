@@ -33,8 +33,10 @@ func Login(c *gin.Context) {
 
 	username := loginReq.Username
 	password := loginReq.Password
+	role := "admin"
+
 	if username == "admin" && password == "admin" { // FIXME 硬编码， 改成从数据库查询，验证密码
-		jwtToken, err := pi.Global.TokenMaker.CreateToken(username, time.Hour)
+		jwtToken, err := pi.Global.TokenMaker.CreateToken(username, role, time.Hour)
 		if err != nil {
 			app.Error(c, err, http.StatusBadRequest, "生成token失败")
 			return
