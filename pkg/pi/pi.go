@@ -8,6 +8,7 @@ import (
 	"github.com/CodeHanHan/ferry-backend/pkg/config"
 	"github.com/CodeHanHan/ferry-backend/pkg/mycasbin"
 	"github.com/CodeHanHan/ferry-backend/pkg/token"
+	"github.com/CodeHanHan/ferry-backend/pkg/validator"
 	"github.com/CodeHanHan/ferry-backend/pkg/xmysql"
 	"github.com/casbin/casbin/v2"
 )
@@ -56,6 +57,10 @@ func SetUp() error {
 	if err := mycasbin.SetUp(func(e *casbin.Enforcer) {
 		Global.Casbin = e
 	}, Global.Mysql); err != nil {
+		return err
+	}
+
+	if err := validator.SetUp(); err != nil {
 		return err
 	}
 

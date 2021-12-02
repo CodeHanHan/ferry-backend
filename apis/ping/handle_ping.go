@@ -2,7 +2,6 @@ package ping
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,6 +9,7 @@ import (
 	modelPing "github.com/CodeHanHan/ferry-backend/models/ping"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
 	"github.com/CodeHanHan/ferry-backend/pkg/form"
+	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
 // Ping godoc
@@ -26,14 +26,13 @@ func Ping(c *gin.Context) {
 	// 1. 验证参数
 	var req form.PingRequest
 	if err := c.ShouldBind(&req); err != nil {
+		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
 		return
 	}
 
 	// 2. 获取参数
 	message := req.Message
-
-	// message := c.Query("message")
 
 	// 3. 逻辑处理，生成回复信息
 	reply := fmt.Sprintf("%s, too", message)
@@ -42,7 +41,8 @@ func Ping(c *gin.Context) {
 	record := modelPing.NewPingRecord(message, reply)
 	if err := ping.CreatePingRecord(c, record); err != nil {
 		// 4. 返回前端信息
-		app.Error(c, err, http.StatusInternalServerError, "创建记录失败: %v", err.Error())
+		logger.Error(c, "创建记录失败: %v", err)
+		app.InternalServerError(c)
 		return
 	}
 
@@ -64,13 +64,15 @@ func Ping(c *gin.Context) {
 func ListPing(c *gin.Context) {
 	var req form.ListPingRequest
 	if err := c.ShouldBind(&req); err != nil {
+		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
 		return
 	}
 
 	records, err := ping.PagePingRecords(c, req.Offset, req.Limit)
 	if err != nil {
-		app.Error(c, err, http.StatusBadRequest, "查询失败")
+		logger.Error(c, "查询数据库失败: %v", err)
+		app.InternalServerError(c)
 		return
 	}
 
@@ -95,7 +97,7 @@ func DeletePing(c *gin.Context) {
 	}
 
 	if err := ping.DeletePingRecord(c, req.PingID); err != nil {
-		app.Error(c, err, http.StatusBadRequest, "删除失败")
+		app.InternalServerError(c)
 		return
 	}
 
@@ -114,7 +116,6 @@ func DeletePing(c *gin.Context) {
 // @Produce  json
 // @Router /ping/update [put]
 func UpdatePing(c *gin.Context) {
-
 	var req form.UpdatePingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		app.ErrorParams(c, err)
@@ -122,7 +123,7 @@ func UpdatePing(c *gin.Context) {
 	}
 	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
 	if err := ping.UpdatePingRecord(c, req.PingID, req.UpdateMessage, reply); err != nil {
-		app.Error(c, err, http.StatusBadRequest, "更新失败")
+		app.InternalServerError(c)
 		return
 	}
 
