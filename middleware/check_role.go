@@ -21,7 +21,7 @@ func CheckRole() gin.HandlerFunc {
 		sub := payload.Role
 		obj := c.Request.URL.Path
 		act := c.Request.Method
-		logger.Info(c, sub, obj, act)
+		// logger.Info(c, "%s call %s for %s", sub, obj, act)
 
 		ok, err := pi.Global.Casbin.Enforce(sub, obj, act)
 		if err != nil {

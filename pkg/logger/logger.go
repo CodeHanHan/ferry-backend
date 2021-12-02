@@ -9,52 +9,30 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/CodeHanHan/ferry-backend/pkg/validator"
 )
 
-// Colors
+type Level uint32
+
+const (
+	CriticalLevel Level = iota
+	ErrorLevel
+	WarnLevel
+	InfoLevel
+	DebugLevel
+)
 
 type color string
 
 const (
-	reset color = "\033[0m"
-	// red         color = "\033[31m"
-	green color = "\033[32m"
-	// yellow      color = "\033[33m"
-	// blue        color = "\033[34m"
-	// magenta     color = "\033[35m"
-	cyan  color = "\033[36m"
-	white color = "\033[37m"
-	// blueBold    color = "\033[34;1m"
+	reset       color = "\033[0m"
+	green       color = "\033[32m"
+	cyan        color = "\033[36m"
+	white       color = "\033[37m"
 	magentaBold color = "\033[35;1m"
 	redBold     color = "\033[31;1m"
-	// yellowBold  color = "\033[33;1m"
 )
-
-type LogLevel uint32
-
-const (
-	InfoLevel LogLevel = iota
-	DebugLevel
-	WarnLevel
-	ErrorLevel
-	CriticalLevel
-)
-
-func (l LogLevel) String() string {
-	switch l {
-	case InfoLevel:
-		return "info"
-	case DebugLevel:
-		return "debug"
-	case WarnLevel:
-		return "warn"
-	case ErrorLevel:
-		return "error"
-	case CriticalLevel:
-		return "critical"
-	}
-	return "unknown"
-}
 
 const (
 	infoColor     = white
@@ -64,31 +42,40 @@ const (
 	criticalColor = magentaBold
 )
 
-type Interface interface {
-	LogMode(LogLevel) Interface
-	Info(context.Context, string, ...interface{})
-	Debug(context.Context, string, ...interface{})
-	Warn(context.Context, string, ...interface{})
-	Error(context.Context, string, ...interface{})
-	Critical(context.Context, string, ...interface{})
+func (level Level) String() string {
+	switch level {
+	case DebugLevel:
+		return "debug"
+	case InfoLevel:
+		return "info"
+	case WarnLevel:
+		return "warning"
+	case ErrorLevel:
+		return "error"
+	case CriticalLevel:
+		return "critical"
+	}
+
+	return "unknown"
 }
 
-type Logger struct {
-	Level         LogLevel
-	output        io.Writer
-	hideCallstack bool
-	depth         int
+func StringToLevel(level string) Level {
+	switch level {
+	case "critical":
+		return CriticalLevel
+	case "error":
+		return ErrorLevel
+	case "warn", "warning":
+		return WarnLevel
+	case "debug":
+		return DebugLevel
+	case "info":
+		return InfoLevel
+	}
+	return InfoLevel
 }
 
-func (logger *Logger) level() LogLevel {
-	return LogLevel(atomic.LoadUint32((*uint32)(&logger.Level)))
-}
-
-func (logger *Logger) SetLevel(level LogLevel) {
-	atomic.StoreUint32((*uint32)(&logger.Level), uint32(level))
-}
-
-func (level LogLevel) Color() color {
+func (level Level) Color() color {
 	switch level {
 	case InfoLevel:
 		return infoColor
@@ -105,39 +92,102 @@ func (level LogLevel) Color() color {
 	return white
 }
 
-func (logger *Logger) formatOutput(ctx context.Context, level LogLevel, output string) string {
-	now := time.Now().Format("2006-01-02 15:04:05")
+var logger = NewLogger().WithDepth(4)
 
-	_, file, line, ok := runtime.Caller(logger.depth)
-	if !ok {
-		file = "???"
-		line = 0
-	}
-	// short file name
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			file = file[i+1:]
-			break
-		}
-	}
-	return fmt.Sprintf("%-25s -%s- %s (%s:%d)",
-		now, strings.ToUpper(level.String()), output, file, line)
+func Info(ctx context.Context, format string, v ...interface{}) {
+	logger.Info(ctx, format, v...)
+}
+
+func Debug(ctx context.Context, format string, v ...interface{}) {
+	logger.Debug(ctx, format, v...)
+}
+
+func Warn(ctx context.Context, format string, v ...interface{}) {
+	logger.Warn(ctx, format, v...)
+}
+
+func Error(ctx context.Context, format string, v ...interface{}) {
+	logger.Error(ctx, format, v...)
+}
+
+func Critical(ctx context.Context, format string, v ...interface{}) {
+	logger.Critical(ctx, format, v...)
+}
+
+func SetOutput(output io.Writer) {
+	logger.SetOutput(output)
+}
+
+var globalLogLevel = InfoLevel
+
+func SetLevelByString(level string) {
+	logger.SetLevelByString(level)
+	globalLogLevel = StringToLevel(level)
 }
 
 func NewLogger() *Logger {
 	return &Logger{
-		Level:  CriticalLevel,
+		Level:  globalLogLevel,
 		output: os.Stdout,
 		depth:  3,
 	}
 }
 
-func (logger *Logger) logf(ctx context.Context, level LogLevel, format string, args ...interface{}) {
-	if logger.Level < level {
+type Logger struct {
+	Level         Level
+	output        io.Writer
+	hideCallstack bool
+	depth         int
+}
+
+func (logger *Logger) level() Level {
+	return Level(atomic.LoadUint32((*uint32)(&logger.Level)))
+}
+
+func (logger *Logger) SetLevel(level Level) {
+	atomic.StoreUint32((*uint32)(&logger.Level), uint32(level))
+}
+
+func (logger *Logger) SetLevelByString(level string) {
+	logger.SetLevel(StringToLevel(level))
+}
+
+var replacer = strings.NewReplacer("\r", "\\r", "\n", "\\n")
+
+func (logger *Logger) formatOutput(ctx context.Context, level Level, output string) string {
+	now := time.Now().Format("2006-01-02 15:04:05.99999")
+
+	if logger.hideCallstack {
+		return fmt.Sprintf("%-25s -%s- %s",
+			now, strings.ToUpper(level.String()), output)
+	} else {
+		_, file, line, ok := runtime.Caller(logger.depth)
+		if !ok {
+			file = "???"
+			line = 0
+		}
+		// short file name
+		for i := len(file) - 1; i > 0; i-- {
+			if file[i] == '/' {
+				file = file[i+1:]
+				break
+			}
+		}
+		return fmt.Sprintf("%-25s -%s- %s (%s:%d)",
+			now, strings.ToUpper(level.String()), output, file, line)
+	}
+}
+
+func (logger *Logger) logf(ctx context.Context, level Level, format string, args ...interface{}) {
+	if logger.level() < level {
 		return
 	}
-
+	// fmt.Fprintln(logger.output, logger.formatOutput(ctx, level, fmt.Sprintf(format, args...)))
 	fmt.Fprintf(logger.output, "%s %s\n %s", level.Color(), logger.formatOutput(ctx, level, fmt.Sprintf(format, args...)), reset)
+}
+
+func (logger *Logger) Debug(ctx context.Context, format string, args ...interface{}) {
+	logger.logf(ctx, DebugLevel, format, args...)
 }
 
 func (logger *Logger) Info(ctx context.Context, format string, args ...interface{}) {
@@ -152,37 +202,25 @@ func (logger *Logger) Error(ctx context.Context, format string, args ...interfac
 	logger.logf(ctx, ErrorLevel, format, args...)
 }
 
-func (logger *Logger) Debug(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, DebugLevel, format, args...)
-}
-
 func (logger *Logger) Critical(ctx context.Context, format string, args ...interface{}) {
 	logger.logf(ctx, CriticalLevel, format, args...)
 }
 
-var logger = NewLogger()
-
-func Info(ctx context.Context, format string, args ...interface{}) {
-	logger.Info(ctx, format, args...)
-}
-
-func Debug(ctx context.Context, format string, args ...interface{}) {
-	logger.Debug(ctx, format, args...)
-}
-
-func Warn(ctx context.Context, format string, args ...interface{}) {
-	logger.Warn(ctx, format, args...)
-}
-
-func Error(ctx context.Context, format string, args ...interface{}) {
-	logger.Error(ctx, format, args...)
-}
-
-func Critical(ctx context.Context, format string, args ...interface{}) {
-	logger.Critical(ctx, format, args...)
+func (logger *Logger) SetOutput(output io.Writer) *Logger {
+	logger.output = output
+	return logger
 }
 
 func (logger *Logger) HideCallstack() *Logger {
 	logger.hideCallstack = true
 	return logger
+}
+
+func (logger *Logger) WithDepth(depth int) *Logger {
+	logger.depth = depth
+	return logger
+}
+
+func ErrorParams(ctx context.Context, err error) {
+	Error(ctx, "参数验证失败: %v", validator.Translate(err))
 }

@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
@@ -38,7 +37,8 @@ func Login(c *gin.Context) {
 	if username == "admin" && password == "admin" { // FIXME 硬编码， 改成从数据库查询，验证密码
 		jwtToken, err := pi.Global.TokenMaker.CreateToken(username, role, time.Hour)
 		if err != nil {
-			app.Error(c, err, http.StatusBadRequest, "生成token失败")
+			logger.Error(c, "生成token失败: %v", err)
+			app.InternalServerError(c)
 			return
 		}
 
@@ -66,7 +66,7 @@ func Profile(c *gin.Context) {
 	payload, err := token.GetPayload(c)
 	if err != nil {
 		logger.Error(c, "获取payload失败")
-		app.Error(c, err, http.StatusBadRequest, "")
+		app.InternalServerError(c)
 	}
 
 	username := payload.Username

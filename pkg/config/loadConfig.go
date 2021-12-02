@@ -14,6 +14,7 @@ type Config struct {
 	Application AppConfig `mapstructure:"application"`
 	Database    DBConfig  `mapstructure:"database"`
 	Jwt         JWTConfig `mapstructure:"jwt"`
+	Log         LogConfig `mapstructure:"log"`
 	Author      []string  `mapstructure:"author"`
 }
 
@@ -35,6 +36,10 @@ type DBConfig struct {
 type JWTConfig struct {
 	Secret  string `mapstructure:"secret"`
 	Timeout string `mapstructure:"timeout"`
+}
+
+type LogConfig struct {
+	Level string `mapstructure:"level"`
 }
 
 func SetUp(register func(*Config)) error {

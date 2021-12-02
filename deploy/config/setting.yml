@@ -3,7 +3,7 @@ mode: dev
 application:
   server_address: 0.0.0.0:10000
 database:
-  level: 1 # 1: Silent, 2: Error, 3: Warn, 4: Info
+  level: 2 # 1: Silent, 2: Error, 3: Warn, 4: Info
   driver: mysql
   user: root
   password: codehanhan
@@ -14,6 +14,8 @@ database:
 jwt:
   secret: 326c9f73b0f45705a73eb020a32d790a
   timeout: 86400
+log:
+  level: info
 author:
   - yangchnet
   - HT-CHEN520
