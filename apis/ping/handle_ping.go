@@ -1,10 +1,13 @@
 package ping
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/ping"
 	modelPing "github.com/CodeHanHan/ferry-backend/models/ping"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
@@ -121,11 +124,15 @@ func UpdatePing(c *gin.Context) {
 		app.ErrorParams(c, err)
 		return
 	}
+
 	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
 	if err := ping.UpdatePingRecord(c, req.PingID, req.UpdateMessage, reply); err != nil {
-		app.InternalServerError(c)
+		if errors.Is(err, db.ErrNotExist) {
+			app.Error(c, http.StatusBadRequest, "更新失败，该记录不存在")
+		} else {
+			app.InternalServerError(c)
+		}
 		return
 	}
-
 	app.OK(c, "更新成功")
 }
