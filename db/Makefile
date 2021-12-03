@@ -23,4 +23,4 @@ migrate-to-%:
 
 .PHONY: up, build
 
-# migrate create -ext sql -dir schema/hello -seq table_name
+# migrate create -ext sql -dir schema -seq file_name
