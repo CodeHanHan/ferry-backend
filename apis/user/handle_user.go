@@ -57,7 +57,7 @@ func Login(c *gin.Context) {
 // @Description 用户查看个人信息
 // @Tags user
 // @ID user-me
-// @Success 200 {object} string
+// @Success 200 {object} form.ProfileResponse
 // @Accept  json
 // @Produce  json
 // @Router /user/me [get]

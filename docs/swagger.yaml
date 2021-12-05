@@ -1,10 +1,28 @@
 basePath: /api/v1
 definitions:
+  form.CaptchaResponse:
+    properties:
+      code:
+        type: string
+      data:
+        type: string
+      id:
+        type: string
+      msg:
+        type: string
+    type: object
   form.LoginResponse:
     properties:
       duration:
         type: integer
       token:
+        type: string
+    type: object
+  form.ProfileResponse:
+    properties:
+      email:
+        type: string
+      username:
         type: string
     type: object
   ping.PingRecord:
@@ -25,6 +43,20 @@ info:
   title: Ferry API
   version: v0.0.1
 paths:
+  /getCaptcha:
+    get:
+      description: 获取验证码
+      operationId: get-captcha
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.CaptchaResponse'
+      summary: 获取验证码
+      tags:
+      - captcha
   /login:
     get:
       consumes:
@@ -164,12 +196,37 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/form.ProfileResponse'
       security:
       - BearerAuth: []
       summary: 查看个人信息
       tags:
       - user
+  /verifyCaptcha:
+    post:
+      description: 验证验证码
+      operationId: verify-captcha
+      parameters:
+      - description: 验证码id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: 验证码内容
+        in: query
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 验证验证码
+      tags:
+      - captcha
 securityDefinitions:
   BearerAuth:
     in: header

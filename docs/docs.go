@@ -23,6 +23,27 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/getCaptcha": {
+            "get": {
+                "description": "获取验证码",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "captcha"
+                ],
+                "summary": "获取验证码",
+                "operationId": "get-captcha",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.CaptchaResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "get": {
                 "description": "获取token",
@@ -235,6 +256,43 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
+                            "$ref": "#/definitions/form.ProfileResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyCaptcha": {
+            "post": {
+                "description": "验证验证码",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "captcha"
+                ],
+                "summary": "验证验证码",
+                "operationId": "verify-captcha",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "验证码id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码内容",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
                             "type": "string"
                         }
                     }
@@ -243,6 +301,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "form.CaptchaResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "form.LoginResponse": {
             "type": "object",
             "properties": {
@@ -250,6 +325,17 @@ var doc = `{
                     "type": "integer"
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.ProfileResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

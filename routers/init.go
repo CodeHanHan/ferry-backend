@@ -38,6 +38,9 @@ func InitSwaggerRouter(g *gin.RouterGroup) {
 
 func InitNoCheckRouter(g *gin.RouterGroup) {
 	ping.RegisterPingRouter(g)
+
+	g.GET("/getCaptcha", userApis.Captcha)
+	g.POST("/verifyCaptcha", userApis.VerifyCaptcha)
 }
 
 func InitAuthSysRouter(r *gin.RouterGroup, authMdw, roleMdw gin.HandlerFunc) *gin.RouterGroup {
