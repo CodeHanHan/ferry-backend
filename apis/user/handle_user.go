@@ -79,3 +79,35 @@ func Profile(c *gin.Context) {
 
 	app.OK(c, "非admin用户")
 }
+
+func register(c *gin.Context) {
+	var registerReq form.RegisterRequest
+	if err := c.ShouldBind(&registerReq); err != nil {
+		logger.Error(c, "参数验证失败: %v", err)
+		app.ErrorParams(c, err)
+	}
+
+	id := registerReq.ID
+	username := registerReq.Username
+	password := registerReq.Password
+	email := registerReq.Email
+	/*
+		role := "admin"
+
+		if username == "admin" && password == "admin" { // FIXME 硬编码， 改成从数据库查询，验证密码
+			jwtToken, err := pi.Global.TokenMaker.CreateToken(username, role, time.Hour)
+			if err != nil {
+				logger.Error(c, "生成token失败: %v", err)
+				app.InternalServerError(c)
+				return
+			}
+
+			app.OK(c, form.LoginResponse{
+				Duration: time.Hour.Microseconds(),
+				Token:    jwtToken,
+			})
+			return
+		}
+
+		app.OK(c, "用户名密码错误")*/
+}

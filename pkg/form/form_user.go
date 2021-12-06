@@ -17,3 +17,9 @@ type ProfileResponse struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
+
+type RegisterRequest struct {
+	ID string `json:"id" form:"id" binding:"required"`
+	LoginRequest
+	Email string `json:"email" binding:"required,email"`
+}
