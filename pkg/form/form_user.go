@@ -17,3 +17,10 @@ type ProfileResponse struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
+
+type InsertSysUserRequest struct {
+	Username string `json:"username" form:"username" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+	Role     string `json:"role" form:"role" binding:"required"`
+	Email    string `json:"email" form:"email" binding:"required,email"`
+}

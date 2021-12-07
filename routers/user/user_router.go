@@ -9,5 +9,6 @@ func RegisterUserRouter(g *gin.RouterGroup, authMiddleware gin.HandlerFunc, role
 	pingGroup := g.Group("/user").Use(authMiddleware).Use(roleMiddleware)
 	{
 		pingGroup.GET("/me", user.Profile)
+		pingGroup.POST("/createuser", user.InsertSysUser)
 	}
 }
