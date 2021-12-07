@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/CodeHanHan/ferry-backend/db"
-	"github.com/CodeHanHan/ferry-backend/models/ping"
+	users "github.com/CodeHanHan/ferry-backend/models/users"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
-func CreateUserRecord(ctx context.Context, record *ping.UsersTable) error {
-	if err := db.Store.Table(ping.UsersTableName).Create(record).Error; err != nil {
+func CreateUserRecord(ctx context.Context, record *users.UsersTable) error {
+	if err := db.Store.Table(users.UsersTableName).Create(record).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}

@@ -18,8 +18,9 @@ type ProfileResponse struct {
 	Email    string `json:"email"`
 }
 
-type RegisterRequest struct {
-	ID string `json:"id" form:"id" binding:"required"`
-	LoginRequest
-	Email string `json:"email" binding:"required,email"`
+type InsertSysUserRequest struct {
+	Username string `json:"username" form:"username" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+	Role     string `json:"role" form:"role" binding:"required"`
+	Email    string `json:"email" form:"email" binding:"required,email"`
 }

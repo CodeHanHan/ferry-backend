@@ -11,6 +11,22 @@ definitions:
       msg:
         type: string
     type: object
+  form.InsertSysUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - role
+    - username
+    type: object
   form.LoginResponse:
     properties:
       duration:
@@ -184,6 +200,45 @@ paths:
       summary: 更新记录信息
       tags:
       - ping
+  /user/createuser:
+    post:
+      consumes:
+      - application/json
+      description: 管理员创建用户个人信息
+      operationId: user-createuser
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: 角色
+        in: query
+        name: role
+        required: true
+        type: string
+      - description: 邮箱
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.InsertSysUserRequest'
+      security:
+      - BearerAuth: []
+      summary: 创建用户信息
+      tags:
+      - user
   /user/me:
     get:
       consumes:
