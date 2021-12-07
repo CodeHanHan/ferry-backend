@@ -11,23 +11,33 @@
 │   ├── query  // 数据库查询
 │   └── schema  // 数据库表定义
 ├── deploy  // 部署、配置相关
-│   ├── 配置config  // 项目
+│   ├── config  // 项目配置
 │   └── docker-compose  // docker-compose部署
-├── doc // 文档
+├── docs
+│   └── dev // 开发文档
 ├── middleware  // 中间件
 ├── models  // orm Model
+│   └── ping
 │   └── ping
 ├── pkg  // 相关包 
 │   ├── app  // 请求回答相关
 │   ├── config  // 加载配置
+│   ├── captcha // 生成验证码
 │   ├── err  
 │   ├── form  // 请求表单
 │   ├── logger  // 日志
-│   └── pi  // 全局
+│   ├── mycasbin // 权限认证
+│   ├── pi  // 全局
+│   ├── token // jwt token身份验证
+│   ├── validator // 表单字段验证
+│   └── xmysql // 数据库连接
 ├── routers  // 路由
-│   └── ping  // ping路由组
+│   ├── ping  // ping路由组
+│   └── user  // user路由组
 └── utils  // 工具包
-    └── idutil
+    ├── idutil // uuid
+    ├── password // 密码加密&验证
+    └── rand // 随机
 ```
 
 ## 2. 启动流程（本地启动）

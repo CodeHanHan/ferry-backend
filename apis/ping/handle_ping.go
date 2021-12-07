@@ -72,7 +72,7 @@ func ListPing(c *gin.Context) {
 		return
 	}
 
-	records, err := ping.PagePingRecords(c, req.Offset, req.Limit)
+	records, err := ping.ListPingRecords(c, req.Offset, req.Limit)
 	if err != nil {
 		logger.Error(c, "查询数据库失败: %v", err)
 		app.InternalServerError(c)
