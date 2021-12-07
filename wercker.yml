@@ -3,8 +3,11 @@
 # If you want Google's container you would reference google/golang
 # Read more about containers on our dev center
 # https://devcenter.wercker.com/overview-and-core-concepts/containers/
-box: golang
-# This is the build pipeline. Pipelines are the core of wercker
+box:
+  id: "golang:1.16.5"
+  username: $DOCKERHUB_USERNAME
+  password: $DOCKERHUB_ACCESS_TOKEN
+
 # Read more about pipelines on our dev center
 # https://devcenter.wercker.com/development/pipelines/
 
