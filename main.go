@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
 	"github.com/CodeHanHan/ferry-backend/db"
+	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/routers"
+	"github.com/golang-migrate/migrate/v4"
 )
 
 // @title Ferry API
@@ -38,4 +41,20 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Printf("Server error: %v", err)
 	}
+}
+
+func Migrate(source string, dsn string) error {
+	m, err := migrate.New(source, dsn)
+	if err != nil {
+		logger.Error(context.Background(), "Failed to load db source or connection: %v", err)
+		return err
+	}
+
+	// Migrate all the way up ...
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		logger.Error(context.Background(), "Failed to migrate: %v", err)
+		return err
+	}
+
+	return nil
 }
