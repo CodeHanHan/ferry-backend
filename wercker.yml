@@ -46,3 +46,16 @@ build:
         name: go test
         code: |
           go test ./...
+
+deploy:
+  steps:
+    - add-to-known_hosts:
+      hostname: $DEPLOY_HOST
+
+    - add-ssh-key:
+      keyname: FERRY_WERCKER
+
+    - script:
+      name: compose-up
+      code: |
+        ssh $DEPLOY_TO_USER@$DEPLOY_HOST "cd ~/go/src/github.com/Codehanhan/ferry-backend && git fetch && git rebase --autostash && make build-images && make compose-up"
