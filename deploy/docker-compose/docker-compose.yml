@@ -15,8 +15,26 @@ services:
   ferry-main:
     image: ferry-main:latest
     container_name: ferry-main
-    ports: 
+    ports:
       - 10001:10000
     restart: on-failure
     depends_on:
       - ferry-db
+
+  ferry-migrate:
+    image: migrate/migrate
+    container_name: ferry-migrate
+    depends_on:
+      - ferry-db
+    volumes:
+      - ../../db/schema:/database
+    command:
+      [
+        "-path",
+        "/database",
+        "-database",
+        "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(ferry-db:3306)/ferry?parseTi\
+          me=true",
+        "up"
+      ]
+    restart: on-failure
