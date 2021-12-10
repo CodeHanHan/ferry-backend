@@ -233,7 +233,7 @@ var doc = `{
                 }
             }
         },
-        "/user/createuser": {
+        "/user/insertsysuser": {
             "post": {
                 "security": [
                     {
@@ -251,7 +251,7 @@ var doc = `{
                     "user"
                 ],
                 "summary": "创建用户信息",
-                "operationId": "user-createuser",
+                "operationId": "user-insertsysuser",
                 "parameters": [
                     {
                         "type": "string",
