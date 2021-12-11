@@ -455,7 +455,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "v0.0.1",
-	Host:        "localhost:10000",
+	Host:        "",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "Ferry API",

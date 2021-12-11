@@ -52,7 +52,6 @@ definitions:
       reply:
         type: string
     type: object
-host: localhost:10000
 info:
   contact: {}
   description: 工单系统
