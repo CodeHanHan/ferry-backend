@@ -200,12 +200,12 @@ paths:
       summary: 更新记录信息
       tags:
       - ping
-  /user/createuser:
+  /user/insertsysuser:
     post:
       consumes:
       - application/json
       description: 管理员创建用户个人信息
-      operationId: user-createuser
+      operationId: user-insertsysuser
       parameters:
       - description: 用户名
         in: query

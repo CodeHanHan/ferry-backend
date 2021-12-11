@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
@@ -27,32 +28,37 @@ import (
 // @Produce  json
 // @Router /login [get]
 func Login(c *gin.Context) {
-	var loginReq form.LoginRequest
-	if err := c.ShouldBind(&loginReq); err != nil {
+	var req form.LoginRequest
+	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
 	}
 
-	username := loginReq.Username
-	password := loginReq.Password
-	role := "admin"
+	username := req.Username
+	pwd := req.Password
 
-	if username == "admin" && password == "admin" { // FIXME 硬编码， 改成从数据库查询，验证密码
-		jwtToken, err := pi.Global.TokenMaker.CreateToken(username, role, time.Hour)
-		if err != nil {
-			logger.Error(c, "生成token失败: %v", err)
-			app.InternalServerError(c)
-			return
-		}
-
-		app.OK(c, form.LoginResponse{
-			Duration: time.Hour.Microseconds(),
-			Token:    jwtToken,
-		})
+	query, err := user.GetByUserName(c, username)
+	if err != nil {
+		app.Error(c, http.StatusBadRequest, "该用户不存在")
 		return
 	}
 
-	app.OK(c, "用户名密码错误")
+	if err := password.CheckPassword(pwd, query.Password); err != nil {
+		app.Error(c, http.StatusBadRequest, "密码输入错误")
+		return
+	}
+
+	jwtToken, err := pi.Global.TokenMaker.CreateToken(username, query.Role, time.Hour)
+	if err != nil {
+		logger.Error(c, "生成token失败: %v", err)
+		app.InternalServerError(c)
+		return
+	}
+
+	app.OK(c, form.LoginResponse{
+		Duration: time.Hour.Microseconds(),
+		Token:    jwtToken,
+	})
 }
 
 // Profile godoc
@@ -87,7 +93,7 @@ func Profile(c *gin.Context) {
 // @Summary 创建用户信息
 // @Description 管理员创建用户个人信息
 // @Tags user
-// @ID user-createuser
+// @ID user-insertsysuser
 // @Param username query string true "用户名"
 // @Param password query string true "密码"
 // @Param role query string true "角色"
@@ -95,7 +101,7 @@ func Profile(c *gin.Context) {
 // @Success 200 {object} form.InsertSysUserRequest
 // @Accept  json
 // @Produce  json
-// @Router /user/createuser [post]
+// @Router /user/insertsysuser [post]
 // @Security BearerAuth
 func InsertSysUser(c *gin.Context) {
 	var req form.InsertSysUserRequest
@@ -116,9 +122,8 @@ func InsertSysUser(c *gin.Context) {
 		app.InternalServerError(c)
 		return
 	}
-
-	if err := user.CreateUserRecord(c,
-		modelUsers.NewUsersTable(username, crypto_pwd, role, email)); err != nil {
+	record := modelUsers.NewUsersTable(username, crypto_pwd, role, email)
+	if err := user.CreateUserRecord(c, record); err != nil {
 		logger.Error(c, "创建记录失败: %v", err)
 		app.InternalServerError(c)
 		return
