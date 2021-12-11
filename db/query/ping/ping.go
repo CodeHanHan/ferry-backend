@@ -26,8 +26,8 @@ func ListPingRecords(ctx context.Context, offset, limit int) ([]*ping.PingRecord
 	return ans, nil
 }
 
-func DeletePingRecord(ctx context.Context, pk string) error {
-	if err := db.Store.Table(ping.PingRecordTableName).Where("ping_id = ?", pk).
+func DeletePingRecord(ctx context.Context, filter *db.Filter) error {
+	if err := db.Store.Table(ping.PingRecordTableName).Where(filter.Params).
 		Delete(&ping.PingRecord{}).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
@@ -36,8 +36,8 @@ func DeletePingRecord(ctx context.Context, pk string) error {
 	return nil
 }
 
-func UpdatePingRecord(ctx context.Context, pk string, message string, reply string) error {
-	res := db.Store.Table(ping.PingRecordTableName).Where("ping_id = ?", pk).Updates(map[string]interface{}{"message": message, "reply": reply})
+func UpdatePingRecord(ctx context.Context, f1, f2 *db.Filter) error {
+	res := db.Store.Table(ping.PingRecordTableName).Where(f1.Params).Updates(f2.Params)
 	if res.Error != nil {
 		logger.Error(ctx, res.Error.Error())
 		return res.Error

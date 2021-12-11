@@ -84,73 +84,7 @@ var doc = `{
                 }
             }
         },
-        "/ping/create": {
-            "post": {
-                "description": "接收一个字符串，返回这个字符串加上\", too\"后缀",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ping"
-                ],
-                "summary": "测试服务是否正常启动",
-                "operationId": "ping",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "any string",
-                        "name": "message",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/ping/delete": {
-            "delete": {
-                "description": "接收主键PingID,根据PingID删除该条记录",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ping"
-                ],
-                "summary": "删除记录信息",
-                "operationId": "delete_ping",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "any string",
-                        "name": "ping_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/ping/list": {
+        "/ping": {
             "get": {
                 "description": "接收偏移和限制量，返回对应的ping记录",
                 "consumes": [
@@ -191,9 +125,7 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/ping/update": {
+            },
             "put": {
                 "description": "接收主键PingID,根据PingID更新该条记录的message",
                 "consumes": [
@@ -219,6 +151,68 @@ var doc = `{
                         "type": "string",
                         "description": "any string",
                         "name": "updatemessage",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "接收一个字符串，返回这个字符串加上\", too\"后缀",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "测试服务是否正常启动",
+                "operationId": "ping",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "any string",
+                        "name": "message",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "接收主键PingID,根据PingID删除该条记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "删除记录信息",
+                "operationId": "delete_ping",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "any string",
+                        "name": "ping_id",
                         "in": "query",
                         "required": true
                     }

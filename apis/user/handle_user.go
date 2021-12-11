@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
 	modelUsers "github.com/CodeHanHan/ferry-backend/models/users"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
@@ -37,7 +38,8 @@ func Login(c *gin.Context) {
 	username := req.Username
 	pwd := req.Password
 
-	query, err := user.GetByUserName(c, username)
+	filter := db.NewFilter().Set("user_name", username)
+	query, err := user.GetByUserName(c, filter)
 	if err != nil {
 		app.Error(c, http.StatusBadRequest, "该用户不存在")
 		return

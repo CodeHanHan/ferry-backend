@@ -100,29 +100,7 @@ paths:
       summary: 用户名密码登录
       tags:
       - user
-  /ping/create:
-    post:
-      consumes:
-      - application/json
-      description: 接收一个字符串，返回这个字符串加上", too"后缀
-      operationId: ping
-      parameters:
-      - description: any string
-        in: query
-        name: message
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: 测试服务是否正常启动
-      tags:
-      - ping
-  /ping/delete:
+  /ping:
     delete:
       consumes:
       - application/json
@@ -144,7 +122,6 @@ paths:
       summary: 删除记录信息
       tags:
       - ping
-  /ping/list:
     get:
       consumes:
       - application/json
@@ -173,7 +150,27 @@ paths:
       summary: 分页获取ping的记录信息
       tags:
       - ping
-  /ping/update:
+    post:
+      consumes:
+      - application/json
+      description: 接收一个字符串，返回这个字符串加上", too"后缀
+      operationId: ping
+      parameters:
+      - description: any string
+        in: query
+        name: message
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 测试服务是否正常启动
+      tags:
+      - ping
     put:
       consumes:
       - application/json
