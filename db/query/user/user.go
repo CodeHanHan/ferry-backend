@@ -17,9 +17,9 @@ func CreateUserRecord(ctx context.Context, record *modelUsers.UsersTable) error 
 	return nil
 }
 
-func GetByUserName(ctx context.Context, username string) (*modelUsers.UsersTable, error) {
+func GetByUserName(ctx context.Context, filter *db.Filter) (*modelUsers.UsersTable, error) {
 	var user modelUsers.UsersTable
-	if err := db.Store.Table(modelUsers.UsersTableName).Where("user_name = ?", username).Find(&user).Error; err != nil {
+	if err := db.Store.Table(modelUsers.UsersTableName).Where(filter.Params).Find(&user).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return nil, err
 	}

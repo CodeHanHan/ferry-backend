@@ -24,7 +24,7 @@ import (
 // @Success 200 {string} string
 // @Accept  json
 // @Produce  json
-// @Router /ping/create [post]
+// @Router /ping [post]
 func Ping(c *gin.Context) {
 	// 1. 验证参数
 	var req form.PingRequest
@@ -63,7 +63,7 @@ func Ping(c *gin.Context) {
 // @Success 200 {object} []modelPing.PingRecord
 // @Accept  json
 // @Produce  json
-// @Router /ping/list [get]
+// @Router /ping [get]
 func ListPing(c *gin.Context) {
 	var req form.ListPingRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -91,7 +91,7 @@ func ListPing(c *gin.Context) {
 // @Success 200 {string} string
 // @Accept  json
 // @Produce  json
-// @Router /ping/delete [delete]
+// @Router /ping [delete]
 func DeletePing(c *gin.Context) {
 	var req form.DeletePingRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -99,7 +99,8 @@ func DeletePing(c *gin.Context) {
 		return
 	}
 
-	if err := ping.DeletePingRecord(c, req.PingID); err != nil {
+	filter := db.NewFilter().Set("ping_id ", req.PingID)
+	if err := ping.DeletePingRecord(c, filter); err != nil {
 		app.InternalServerError(c)
 		return
 	}
@@ -117,7 +118,7 @@ func DeletePing(c *gin.Context) {
 // @Success 200 {string} string
 // @Accept  json
 // @Produce  json
-// @Router /ping/update [put]
+// @Router /ping [put]
 func UpdatePing(c *gin.Context) {
 	var req form.UpdatePingRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -126,7 +127,9 @@ func UpdatePing(c *gin.Context) {
 	}
 
 	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
-	if err := ping.UpdatePingRecord(c, req.PingID, req.UpdateMessage, reply); err != nil {
+	f1 := db.NewFilter().Set("ping_id", req.PingID)
+	f2 := db.NewFilter().Set("message", req.UpdateMessage).Set("reply", reply)
+	if err := ping.UpdatePingRecord(c, f1, f2); err != nil {
 		if errors.Is(err, db.ErrNotExist) {
 			app.Error(c, http.StatusBadRequest, "更新失败，该记录不存在")
 		} else {

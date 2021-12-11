@@ -8,9 +8,9 @@ import (
 func RegisterPingRouter(g *gin.RouterGroup) {
 	pingGroup := g.Group("/ping")
 	{
-		pingGroup.POST("/create", ping.Ping)
-		pingGroup.GET("/list", ping.ListPing)
-		pingGroup.DELETE("/delete", ping.DeletePing)
-		pingGroup.PUT("/update", ping.UpdatePing)
+		pingGroup.POST("", ping.Ping)
+		pingGroup.GET("", ping.ListPing)
+		pingGroup.DELETE("", ping.DeletePing)
+		pingGroup.PUT("", ping.UpdatePing)
 	}
 }
