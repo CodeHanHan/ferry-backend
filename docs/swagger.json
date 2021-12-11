@@ -6,7 +6,6 @@
         "contact": {},
         "version": "v0.0.1"
     },
-    "host": "localhost:10000",
     "basePath": "/api/v1",
     "paths": {
         "/getCaptcha": {

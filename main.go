@@ -13,7 +13,6 @@ import (
 // @version v0.0.1
 // @description 工单系统
 
-// @host localhost:10000
 // @BasePath /api/v1
 
 // @securityDefinitions.apikey BearerAuth
