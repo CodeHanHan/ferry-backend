@@ -8,7 +8,7 @@ const UsersTableName = "users_table"
 
 type UsersTable struct {
 	ID       string `gorm:"column:id;primary_key"`
-	UserName string `gorm:"column:user_name"`
+	UserName string `gorm:"column:username"`
 	Password string `gorm:"column:password"`
 	Role     string `gorm:"column:role"`
 	Email    string `gorm:"column:email"`

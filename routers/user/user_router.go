@@ -5,11 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRouter(g *gin.RouterGroup, authMiddleware gin.HandlerFunc, roleMiddleware gin.HandlerFunc) {
-	pingGroup := g.Group("/user").Use(authMiddleware).Use(roleMiddleware)
+func RegisterUserRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
+	pingGroup := g.Group("/user").Use(mdw...)
 	{
 		pingGroup.GET("/me", user.Profile)
 		pingGroup.POST("/insertsysuser", user.InsertSysUser)
-		pingGroup.GET("/login",user.Login)
+		pingGroup.GET("/login", user.Login)
 	}
 }

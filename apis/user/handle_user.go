@@ -1,9 +1,10 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
@@ -12,9 +13,8 @@ import (
 	"github.com/CodeHanHan/ferry-backend/pkg/form"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
-	"github.com/CodeHanHan/ferry-backend/pkg/token"
+	"github.com/CodeHanHan/ferry-backend/pkg/sender"
 	"github.com/CodeHanHan/ferry-backend/utils/password"
-	"github.com/gin-gonic/gin"
 )
 
 // Login godoc
@@ -38,7 +38,7 @@ func Login(c *gin.Context) {
 	username := req.Username
 	pwd := req.Password
 
-	filter := db.NewFilter().Set("user_name", username)
+	filter := db.NewFilter().Set("username", username)
 	query, err := user.GetByUserName(c, filter)
 	if err != nil {
 		app.Error(c, http.StatusBadRequest, "该用户不存在")
@@ -74,21 +74,23 @@ func Login(c *gin.Context) {
 // @Router /user/me [get]
 // @Security BearerAuth
 func Profile(c *gin.Context) {
-	payload, err := token.GetPayload(c)
+	sender, _, err := sender.GetSender(c)
 	if err != nil {
-		logger.Error(c, "获取payload失败")
 		app.InternalServerError(c)
-	}
-
-	username := payload.Username
-	email := fmt.Sprintf("%s@ferry.com", username)
-
-	if username == "admin" {
-		app.OK(c, &form.ProfileResponse{Username: username, Email: email})
 		return
 	}
 
-	app.OK(c, "非admin用户")
+	filter := db.NewFilter().Set("username", sender)
+	userRecord, err := user.GetByUserName(c, filter)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	app.OK(c, form.ProfileResponse{
+		Username: userRecord.UserName,
+		Email:    userRecord.Email,
+	})
 }
 
 // Register godoc

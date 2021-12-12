@@ -26,8 +26,9 @@ func InitRouter() *gin.Engine {
 
 	authMiddleware := middleware.AuthMiddleware(pi.Global.TokenMaker)
 	roleMiddleware := middleware.CheckRole()
+	senderMiddleware := middleware.Sender()
 
-	InitAuthSysRouter(v1, authMiddleware, roleMiddleware)
+	InitAuthSysRouter(v1, authMiddleware, roleMiddleware, senderMiddleware)
 
 	return r
 }
@@ -43,11 +44,11 @@ func InitNoCheckRouter(g *gin.RouterGroup) {
 	g.POST("/verifyCaptcha", userApis.VerifyCaptcha)
 }
 
-func InitAuthSysRouter(r *gin.RouterGroup, authMdw, roleMdw gin.HandlerFunc) *gin.RouterGroup {
+func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGroup {
 	g := r.Group("")
 	g.GET("/login", userApis.Login)
 
-	user.RegisterUserRouter(g, authMdw, roleMdw)
+	user.RegisterUserRouter(g, mdw...)
 
 	return g
 }

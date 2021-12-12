@@ -1,0 +1,1 @@
+DELETE FROM `ferry`.`users_table` WHERE id LIKE '0' ESCAPE '#';
