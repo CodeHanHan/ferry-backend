@@ -1,6 +1,6 @@
 CREATE TABLE `users_table` (
   `id` varchar(100) PRIMARY KEY,
-  `user_name` varchar(255) unique,
+  `username` varchar(255) unique,
   `password` varchar(255),
   `email` varchar(255),
   `role` varchar(255),
