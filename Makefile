@@ -11,6 +11,9 @@ build-db:
 db-up:
 	@cd db && make up
 
+migrate-new-%:
+	@cd db && make migrate-new-$*
+
 # 数据库正向迁移
 migrate-up:
 	@cd db && make migrate-up

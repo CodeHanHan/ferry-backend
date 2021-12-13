@@ -21,6 +21,7 @@ migrate-down-%:
 migrate-to-%:
 	@migrate -source=file://schema -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(localhost:13306)/ferry" -verbose goto $*
 
-.PHONY: up, build
+migrate-new-%:
+	migrate create -ext sql -dir schema -seq $*
 
-# migrate create -ext sql -dir schema -seq file_name
+.PHONY: up, build

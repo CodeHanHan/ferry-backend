@@ -9,25 +9,37 @@ import (
 )
 
 func InternalServerError(c *gin.Context) {
-	c.String(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+	Error(c, Err_Internal, nil)
 }
 
-func Error(c *gin.Context, code int, format string, values ...interface{}) {
-	errMsg := http.StatusText(code)
-
-	var msg string
-	if len(values) > 0 {
-		msg = fmt.Sprintf("%s | "+format, errMsg, values)
-	} else {
-		msg = errMsg + ": " + format
+func Error(c *gin.Context, code ErrCode, detail interface{}) {
+	resp := ErrorResponse{
+		Code:    code,
+		Message: code.String(),
+		Detail:  detail,
 	}
-	c.String(code, msg)
+
+	c.JSON(int(code), resp)
+}
+
+func Errorf(c *gin.Context, code ErrCode, format string, values ...interface{}) {
+	resp := ErrorResponse{
+		Code:    code,
+		Message: code.String(),
+		Detail:  fmt.Sprintf(format, values...),
+	}
+
+	c.JSON(int(code), resp)
 }
 
 func ErrorParams(c *gin.Context, err error) {
-	c.JSON(http.StatusBadRequest, validator.Translate(err))
+	Error(c, Err_Invalid_Argument, validator.Translate(err))
 }
 
 func OK(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, gin.H{
+		"code":    200,
+		"message": "success",
+		"detail":  data,
+	})
 }

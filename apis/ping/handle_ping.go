@@ -3,11 +3,10 @@ package ping
 import (
 	"errors"
 	"fmt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 
-	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/ping"
 	modelPing "github.com/CodeHanHan/ferry-backend/models/ping"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
@@ -50,7 +49,7 @@ func Ping(c *gin.Context) {
 	}
 
 	// 5. 返回信息
-	app.OK(c, reply)
+	app.OK(c, record)
 }
 
 // ListPing godoc
@@ -99,13 +98,12 @@ func DeletePing(c *gin.Context) {
 		return
 	}
 
-	filter := db.NewFilter().Set("ping_id ", req.PingID)
-	if err := ping.DeletePingRecord(c, filter); err != nil {
+	if err := ping.DeletePingRecord(c, req.PingID); err != nil {
 		app.InternalServerError(c)
 		return
 	}
 
-	app.OK(c, "success")
+	app.OK(c, nil)
 }
 
 // UpdatePing godoc
@@ -120,22 +118,33 @@ func DeletePing(c *gin.Context) {
 // @Produce  json
 // @Router /ping [put]
 func UpdatePing(c *gin.Context) {
+	// 1. 校验参数
 	var req form.UpdatePingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		app.ErrorParams(c, err)
 		return
 	}
 
-	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
-	f1 := db.NewFilter().Set("ping_id", req.PingID)
-	f2 := db.NewFilter().Set("message", req.UpdateMessage).Set("reply", reply)
-	if err := ping.UpdatePingRecord(c, f1, f2); err != nil {
-		if errors.Is(err, db.ErrNotExist) {
-			app.Error(c, http.StatusBadRequest, "更新失败，该记录不存在")
-		} else {
-			app.InternalServerError(c)
+	// 2. 查询要更改的记录值是否存在
+	record, err := ping.GetPingRecordByPingID(c, req.PingID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			app.Errorf(c, app.Err_Not_found, "更新失败，未找到该记录值: %s", req.PingID)
+			return
 		}
+		app.InternalServerError(c)
 		return
 	}
-	app.OK(c, "更新成功")
+
+	// 3. update
+	reply := fmt.Sprintf("%s, too", req.UpdateMessage)
+	record.Message = req.UpdateMessage
+	record.Reply = reply
+	if err := ping.UpdatePingRecord(c, record); err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	// 4. 返回
+	app.OK(c, nil)
 }
