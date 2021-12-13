@@ -72,6 +72,60 @@ var doc = `{
                         "name": "password",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码内容",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/logintest": {
+            "get": {
+                "description": "获取token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户名密码登录",
+                "operationId": "user-logintest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -228,44 +282,6 @@ var doc = `{
             }
         },
         "/user": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "管理员删除用户个人信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "删除用户信息",
-                "operationId": "user-deletesysuser",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "用户ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/form.DeleteSysUserRequest"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/insertsysuser": {
             "post": {
                 "security": [
                     {
@@ -283,7 +299,7 @@ var doc = `{
                     "user"
                 ],
                 "summary": "创建用户信息",
-                "operationId": "user-insertsysuser",
+                "operationId": "user-createsysuser",
                 "parameters": [
                     {
                         "type": "string",
@@ -318,7 +334,43 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.InsertSysUserRequest"
+                            "$ref": "#/definitions/form.CreateSysUserRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "管理员删除用户个人信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "删除用户信息",
+                "operationId": "user-deletesysuser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.DeleteSysUserRequest"
                         }
                     }
                 }
@@ -409,18 +461,7 @@ var doc = `{
                 }
             }
         },
-        "form.DeleteSysUserRequest": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "form.InsertSysUserRequest": {
+        "form.CreateSysUserRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -439,6 +480,17 @@ var doc = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.DeleteSysUserRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
                     "type": "string"
                 }
             }
