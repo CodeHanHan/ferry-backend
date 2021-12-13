@@ -26,9 +26,8 @@ func ListPingRecords(ctx context.Context, offset, limit int) ([]*ping.PingRecord
 	return ans, nil
 }
 
-func DeletePingRecord(ctx context.Context, filter *db.Filter) error {
-	if err := db.Store.Table(ping.PingRecordTableName).Where(filter.Params).
-		Delete(&ping.PingRecord{}).Error; err != nil {
+func DeletePingRecord(ctx context.Context, pk string) error {
+	if err := db.Store.Table(ping.PingRecordTableName).Where(map[string]interface{}{"ping_id": pk}).Delete(&ping.PingRecord{}).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}
@@ -36,15 +35,19 @@ func DeletePingRecord(ctx context.Context, filter *db.Filter) error {
 	return nil
 }
 
-func UpdatePingRecord(ctx context.Context, f1, f2 *db.Filter) error {
-	res := db.Store.Table(ping.PingRecordTableName).Where(f1.Params).Updates(f2.Params)
-	if res.Error != nil {
-		logger.Error(ctx, res.Error.Error())
-		return res.Error
+func GetPingRecordByPingID(ctx context.Context, pk string) (record *ping.PingRecord, err error) {
+	if err := db.Store.Table(ping.PingRecordTableName).Where(map[string]interface{}{"ping_id": pk}).Take(&record).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
 	}
-	if res.RowsAffected <= 0 {
-		logger.Error(ctx, "要更新的值不存在")
-		return db.ErrNotExist
+
+	return
+}
+
+func UpdatePingRecord(ctx context.Context, record *ping.PingRecord) error {
+	if err := db.Store.Table(ping.PingRecordTableName).Updates(record).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
 	}
 
 	return nil
