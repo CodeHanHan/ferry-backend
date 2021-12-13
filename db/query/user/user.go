@@ -25,3 +25,12 @@ func GetByUserName(ctx context.Context, filter *db.Filter) (*modelUsers.UsersTab
 	}
 	return &user, nil
 }
+
+func DeleteSysUser(ctx context.Context, id string) error {
+	var user modelUsers.UsersTable
+	if err := db.Store.Table(modelUsers.UsersTableName).Where("id=?", id).Delete(&user).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+	return nil
+}

@@ -24,3 +24,7 @@ type InsertSysUserRequest struct {
 	Role     string `json:"role" form:"role" binding:"required"`
 	Email    string `json:"email" form:"email" binding:"required,email"`
 }
+
+type DeleteSysUserRequest struct {
+	ID   string `json:"id" form:"id" binding:"required"`
+}

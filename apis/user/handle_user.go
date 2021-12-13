@@ -134,3 +134,42 @@ func InsertSysUser(c *gin.Context) {
 	}
 	app.OK(c, "创建成功")
 }
+
+// Delete godoc
+// @Summary 删除用户信息
+// @Description 管理员删除用户个人信息
+// @Tags user
+// @ID user-deletesysuser
+// @Param id query string true "用户ID"
+// @Success 200 {object} form.DeleteSysUserRequest
+// @Accept  json
+// @Produce  json
+// @Router /user [delete]
+// @Security BearerAuth
+func DeleteSysUser(c *gin.Context) {
+	var req form.DeleteSysUserRequest
+	if err := c.ShouldBind(&req);err != nil {
+		logger.Error(c, "获取信息失败")
+		app.ErrorParams(c, err)
+		return
+	}
+
+	/* senderUsername, _, err := sender.GetSender(c)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	} */
+
+	uid := req.ID
+	if uid == "0" {
+		logger.Error(c, "非法删除")
+		app.Error(c, app.Err_Permission_Denied,"删除权限不够")
+		return
+	}
+	if err := user.DeleteSysUser(c, uid); err != nil {
+		logger.Error(c, "删除失败:%v", err)
+		app.InternalServerError(c)
+		return
+	}
+	app.OK(c, "删除成功")
+}
