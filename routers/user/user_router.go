@@ -11,5 +11,6 @@ func RegisterUserRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
 		pingGroup.GET("/me", user.Profile)
 		pingGroup.POST("/insertsysuser", user.InsertSysUser)
 		pingGroup.GET("/login", user.Login)
+		pingGroup.DELETE("", user.DeleteSysUser)
 	}
 }

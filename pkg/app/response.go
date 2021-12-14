@@ -43,3 +43,4 @@ func OK(c *gin.Context, data interface{}) {
 		"detail":  data,
 	})
 }
+

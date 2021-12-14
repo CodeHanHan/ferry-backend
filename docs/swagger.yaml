@@ -11,6 +11,13 @@ definitions:
       msg:
         type: string
     type: object
+  form.DeleteSysUserRequest:
+    properties:
+      id:
+        type: string
+    required:
+    - id
+    type: object
   form.InsertSysUserRequest:
     properties:
       email:
@@ -196,6 +203,30 @@ paths:
       summary: 更新记录信息
       tags:
       - ping
+  /user:
+    delete:
+      consumes:
+      - application/json
+      description: 管理员删除用户个人信息
+      operationId: user-deletesysuser
+      parameters:
+      - description: 用户ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.DeleteSysUserRequest'
+      security:
+      - BearerAuth: []
+      summary: 删除用户信息
+      tags:
+      - user
   /user/insertsysuser:
     post:
       consumes:
