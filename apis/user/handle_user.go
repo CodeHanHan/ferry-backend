@@ -1,7 +1,6 @@
 package user
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,12 +23,67 @@ import (
 // @ID user-login
 // @Param username query string true "用户名"
 // @Param password query string true "密码"
+// @Param id query string true "验证码id"
+// @Param code query string true "验证码内容"
 // @Success 200 {object} form.LoginResponse
 // @Accept  json
 // @Produce  json
 // @Router /login [get]
 func Login(c *gin.Context) {
 	var req form.LoginRequest
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error(c, "参数验证失败: %v", err)
+		app.ErrorParams(c, err)
+	}
+	username := req.Username
+	pwd := req.Password
+	id := req.Id
+	code := req.Code
+
+	ok := store.Verify(id, code, true)
+	if !ok {
+		app.Error(c, app.Err_Permission_Denied, "验证码错误")
+		return
+	}
+
+	filter := db.NewFilter().Set("username", username)
+	query, err := user.GetByUserName(c, filter)
+	if err != nil {
+		app.Error(c, app.Err_Permission_Denied, "该用户不存在")
+		return
+	}
+
+	if err := password.CheckPassword(pwd, query.Password); err != nil {
+		app.Error(c, app.Err_Permission_Denied, "密码输入错误")
+		return
+	}
+
+	jwtToken, err := pi.Global.TokenMaker.CreateToken(username, query.Role, time.Hour)
+	if err != nil {
+		logger.Error(c, "生成token失败: %v", err)
+		app.InternalServerError(c)
+		return
+	}
+
+	app.OK(c, form.LoginResponse{
+		Duration: time.Hour.Microseconds(),
+		Token:    jwtToken,
+	})
+}
+
+// LoginTest godoc
+// @Summary 用户名密码登录
+// @Description 获取token
+// @Tags user
+// @ID user-logintest
+// @Param username query string true "用户名"
+// @Param password query string true "密码"
+// @Success 200 {object} form.LoginResponse
+// @Accept  json
+// @Produce  json
+// @Router /logintest [get]
+func LoginTest(c *gin.Context) {
+	var req form.LoginTestRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
@@ -41,12 +95,12 @@ func Login(c *gin.Context) {
 	filter := db.NewFilter().Set("username", username)
 	query, err := user.GetByUserName(c, filter)
 	if err != nil {
-		app.Error(c, http.StatusBadRequest, "该用户不存在")
+		app.Error(c, app.Err_Permission_Denied, "该用户不存在")
 		return
 	}
 
 	if err := password.CheckPassword(pwd, query.Password); err != nil {
-		app.Error(c, http.StatusBadRequest, "密码输入错误")
+		app.Error(c, app.Err_Permission_Denied, "密码输入错误")
 		return
 	}
 
@@ -97,18 +151,18 @@ func Profile(c *gin.Context) {
 // @Summary 创建用户信息
 // @Description 管理员创建用户个人信息
 // @Tags user
-// @ID user-insertsysuser
+// @ID user-createsysuser
 // @Param username query string true "用户名"
 // @Param password query string true "密码"
 // @Param role query string true "角色"
 // @Param email query string true "邮箱"
-// @Success 200 {object} form.InsertSysUserRequest
+// @Success 200 {object} form.CreateSysUserRequest
 // @Accept  json
 // @Produce  json
-// @Router /user/insertsysuser [post]
+// @Router /user [post]
 // @Security BearerAuth
-func InsertSysUser(c *gin.Context) {
-	var req form.InsertSysUserRequest
+func CreateSysUser(c *gin.Context) {
+	var req form.CreateSysUserRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
@@ -148,7 +202,7 @@ func InsertSysUser(c *gin.Context) {
 // @Security BearerAuth
 func DeleteSysUser(c *gin.Context) {
 	var req form.DeleteSysUserRequest
-	if err := c.ShouldBind(&req);err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "获取信息失败")
 		app.ErrorParams(c, err)
 		return
@@ -163,7 +217,7 @@ func DeleteSysUser(c *gin.Context) {
 	uid := req.ID
 	if uid == "0" {
 		logger.Error(c, "非法删除")
-		app.Error(c, app.Err_Permission_Denied,"删除权限不够")
+		app.Error(c, app.Err_Permission_Denied, "删除权限不够")
 		return
 	}
 	if err := user.DeleteSysUser(c, uid); err != nil {

@@ -3,8 +3,14 @@ package form
 type LoginRequest struct {
 	Username string `json:"username" form:"username" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required"`
+	Id       string `json:"id" form:"id" binding:"required"`
+	Code     string `json:"code" form:"code" binding:"required"`
 }
 
+type LoginTestRequest struct {
+	Username string `json:"username" form:"username" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+}
 type LoginResponse struct {
 	Duration int64  `json:"duration"`
 	Token    string `json:"token" form:"token"`
@@ -18,7 +24,7 @@ type ProfileResponse struct {
 	Email    string `json:"email"`
 }
 
-type InsertSysUserRequest struct {
+type CreateSysUserRequest struct {
 	Username string `json:"username" form:"username" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required"`
 	Role     string `json:"role" form:"role" binding:"required"`
