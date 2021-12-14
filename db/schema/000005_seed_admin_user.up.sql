@@ -1,1 +1,1 @@
-INSERT INTO `ferry`.`users_table` (id, username, password, email, role, create_time) VALUES ('0', 'admin', '$2a$10$ysekK7V5CZAZSg01125ngux3dGxfRG/n3m/Ap4erQ0Fu5OnwVNe3O', 'admin@ferry.com', 'admin', DEFAULT);
+INSERT INTO `ferry`.`user` (id, username, password, email, role, create_time) VALUES ('0', 'admin', '$2a$10$ysekK7V5CZAZSg01125ngux3dGxfRG/n3m/Ap4erQ0Fu5OnwVNe3O', 'admin@ferry.com', 'admin', DEFAULT);
