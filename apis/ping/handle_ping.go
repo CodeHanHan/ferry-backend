@@ -10,7 +10,7 @@ import (
 	"github.com/CodeHanHan/ferry-backend/db/query/ping"
 	modelPing "github.com/CodeHanHan/ferry-backend/models/ping"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
-	"github.com/CodeHanHan/ferry-backend/pkg/form"
+	formPing "github.com/CodeHanHan/ferry-backend/pkg/form/ping"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
@@ -20,13 +20,14 @@ import (
 // @Tags ping
 // @ID ping
 // @Param message query string true "any string"
-// @Success 200 {string} string
-// @Accept  json
+// @Success 200 {object} form.PingResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /ping [post]
 func Ping(c *gin.Context) {
 	// 1. 验证参数
-	var req form.PingRequest
+	var req formPing.PingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
@@ -49,7 +50,10 @@ func Ping(c *gin.Context) {
 	}
 
 	// 5. 返回信息
-	app.OK(c, record)
+	resp := formPing.PingResponse{
+		Reply: reply,
+	}
+	app.OK(c, resp)
 }
 
 // ListPing godoc
@@ -59,12 +63,13 @@ func Ping(c *gin.Context) {
 // @ID list-ping
 // @Param offset query int true "偏移量"
 // @Param limit query int true "每页记录数"
-// @Success 200 {object} []modelPing.PingRecord
-// @Accept  json
+// @Success 200 {object} form.ListPingResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /ping [get]
 func ListPing(c *gin.Context) {
-	var req form.ListPingRequest
+	var req formPing.ListPingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
@@ -78,7 +83,11 @@ func ListPing(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, records)
+	resp := formPing.ListPingResponse{
+		Records: records,
+	}
+
+	app.OK(c, resp)
 }
 
 // DeletePing godoc
@@ -87,12 +96,13 @@ func ListPing(c *gin.Context) {
 // @Tags ping
 // @ID delete_ping
 // @Param ping_id query string true "any string"
-// @Success 200 {string} string
-// @Accept  json
+// @Success 200 {object} form.PingResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /ping [delete]
 func DeletePing(c *gin.Context) {
-	var req form.DeletePingRequest
+	var req formPing.DeletePingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		app.ErrorParams(c, err)
 		return
@@ -103,7 +113,10 @@ func DeletePing(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, nil)
+	resp := formPing.DeletePingResponse{
+		Result: "success",
+	}
+	app.OK(c, resp)
 }
 
 // UpdatePing godoc
@@ -113,13 +126,14 @@ func DeletePing(c *gin.Context) {
 // @ID update_ping
 // @Param ping_id query string true "any string"
 // @Param updatemessage query string true "any string"
-// @Success 200 {string} string
-// @Accept  json
+// @Success 200 {object} form.UpdatePingResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /ping [put]
 func UpdatePing(c *gin.Context) {
 	// 1. 校验参数
-	var req form.UpdatePingRequest
+	var req formPing.UpdatePingRequest
 	if err := c.ShouldBind(&req); err != nil {
 		app.ErrorParams(c, err)
 		return
@@ -146,5 +160,8 @@ func UpdatePing(c *gin.Context) {
 	}
 
 	// 4. 返回
-	app.OK(c, nil)
+	resp := formPing.UpdatePingResponse{
+		Result: "success",
+	}
+	app.OK(c, resp)
 }

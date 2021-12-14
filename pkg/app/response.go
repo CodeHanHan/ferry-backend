@@ -8,28 +8,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ErrResponse struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Detail  interface{} `json:"details"`
+}
+
+func Error(c *gin.Context, code ErrCode, data interface{}) {
+	resp := ErrResponse{
+		Code:    int(code),
+		Message: code.String(),
+		Detail:  data,
+	}
+
+	c.JSON(int(code), resp)
+}
+
 func InternalServerError(c *gin.Context) {
 	Error(c, Err_Internal, nil)
 }
 
-func Error(c *gin.Context, code ErrCode, detail interface{}) {
-	resp := ErrorResponse{
-		Code:    code,
-		Message: code.String(),
-		Detail:  detail,
-	}
-
-	c.JSON(int(code), resp)
-}
-
 func Errorf(c *gin.Context, code ErrCode, format string, values ...interface{}) {
-	resp := ErrorResponse{
-		Code:    code,
-		Message: code.String(),
-		Detail:  fmt.Sprintf(format, values...),
-	}
-
-	c.JSON(int(code), resp)
+	Error(c, code, fmt.Sprintf(format, values...))
 }
 
 func ErrorParams(c *gin.Context, err error) {
@@ -37,10 +37,5 @@ func ErrorParams(c *gin.Context, err error) {
 }
 
 func OK(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, gin.H{
-		"code":    200,
-		"message": "success",
-		"detail":  data,
-	})
+	c.JSON(http.StatusOK, data)
 }
-

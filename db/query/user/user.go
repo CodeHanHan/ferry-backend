@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/CodeHanHan/ferry-backend/db"
-	modelUsers "github.com/CodeHanHan/ferry-backend/models/users"
+	modelUser "github.com/CodeHanHan/ferry-backend/models/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 )
 
-func CreateUserRecord(ctx context.Context, record *modelUsers.UsersTable) error {
-	if err := db.Store.Table(modelUsers.UsersTableName).Create(record).Error; err != nil {
+func CreateUserRecord(ctx context.Context, record *modelUser.UserTable) error {
+	if err := db.Store.Table(modelUser.UserTableName).Create(record).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}
@@ -17,9 +17,9 @@ func CreateUserRecord(ctx context.Context, record *modelUsers.UsersTable) error 
 	return nil
 }
 
-func GetByUserName(ctx context.Context, filter *db.Filter) (*modelUsers.UsersTable, error) {
-	var user modelUsers.UsersTable
-	if err := db.Store.Table(modelUsers.UsersTableName).Where(filter.Params).Find(&user).Error; err != nil {
+func GetByUserName(ctx context.Context, filter *db.Filter) (*modelUser.UserTable, error) {
+	var user modelUser.UserTable
+	if err := db.Store.Table(modelUser.UserTableName).Where(filter.Params).Find(&user).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return nil, err
 	}
@@ -27,8 +27,8 @@ func GetByUserName(ctx context.Context, filter *db.Filter) (*modelUsers.UsersTab
 }
 
 func DeleteSysUser(ctx context.Context, id string) error {
-	var user modelUsers.UsersTable
-	if err := db.Store.Table(modelUsers.UsersTableName).Where("id=?", id).Delete(&user).Error; err != nil {
+	var user modelUser.UserTable
+	if err := db.Store.Table(modelUser.UserTableName).Where("id=?", id).Delete(&user).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}

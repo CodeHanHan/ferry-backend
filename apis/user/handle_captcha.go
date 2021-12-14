@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
 	"github.com/CodeHanHan/ferry-backend/pkg/captcha"
-	"github.com/CodeHanHan/ferry-backend/pkg/form"
+	formUser "github.com/CodeHanHan/ferry-backend/pkg/form/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/mojocn/base64Captcha"
@@ -16,9 +16,10 @@ var store = base64Captcha.DefaultMemStore
 // @Description 获取验证码
 // @Tags captcha
 // @ID get-captcha
-// @Success 200 {object} form.CaptchaResponse
+// @Success 200 {object} formUser.CaptchaResponse
+// @Failure 500 {object} app.ErrResponse
 // @Produce  json
-// @Router /getCaptcha [get]
+// @Router /captcha [get]
 func Captcha(c *gin.Context) {
 	id, b64s, err := captcha.DriverDigitFunc()
 	if err != nil {
@@ -27,7 +28,7 @@ func Captcha(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, form.CaptchaResponse{
+	app.OK(c, formUser.CaptchaResponse{
 		Code: "200",
 		Data: b64s,
 		Id:   id,
@@ -43,11 +44,12 @@ func Captcha(c *gin.Context) {
 // @ID verify-captcha
 // @Param id query string true "验证码id"
 // @Param code query string true "验证码内容"
-// @Success 200 {object} string
+// @Success 200 {object} formUser.VerifyCaptchaResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
-// @Router /verifyCaptcha [post]
+// @Router /captcha [post]
 func VerifyCaptcha(c *gin.Context) {
-	var req form.VerifyCaptchaRequest
+	var req formUser.VerifyCaptchaRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败")
 		app.ErrorParams(c, err)
@@ -56,10 +58,14 @@ func VerifyCaptcha(c *gin.Context) {
 
 	ok := store.Verify(req.Id, req.Code, true)
 	if ok {
-		app.OK(c, "success")
+		app.OK(c, formUser.VerifyCaptchaResponse{
+			Result: "success",
+		})
 		return
 	} else {
-		app.OK(c, "fail")
+		app.OK(c, formUser.VerifyCaptchaResponse{
+			Result: "fail",
+		})
 		return
 	}
 }
