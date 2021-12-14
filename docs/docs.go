@@ -23,7 +23,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/getCaptcha": {
+        "/captcha": {
             "get": {
                 "description": "获取验证码",
                 "produces": [
@@ -40,6 +40,53 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/form.CaptchaResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "验证验证码",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "captcha"
+                ],
+                "summary": "验证验证码",
+                "operationId": "verify-captcha",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "验证码id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码内容",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.VerifyCaptchaResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
                     }
                 }
             }
@@ -47,9 +94,6 @@ var doc = `{
         "/login": {
             "get": {
                 "description": "获取token",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -94,6 +138,18 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/form.LoginResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
                     }
                 }
             }
@@ -101,16 +157,13 @@ var doc = `{
         "/logintest": {
             "get": {
                 "description": "获取token",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "user"
                 ],
-                "summary": "用户名密码登录",
+                "summary": "用户名密码登录(测试用)",
                 "operationId": "user-logintest",
                 "parameters": [
                     {
@@ -134,6 +187,18 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/form.LoginResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
                     }
                 }
             }
@@ -141,9 +206,6 @@ var doc = `{
         "/ping": {
             "get": {
                 "description": "接收偏移和限制量，返回对应的ping记录",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -172,19 +234,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ping.PingRecord"
-                            }
+                            "$ref": "#/definitions/form.ListPingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
             },
             "put": {
                 "description": "接收主键PingID,根据PingID更新该条记录的message",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -213,16 +281,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/form.UpdatePingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
             },
             "post": {
                 "description": "接收一个字符串，返回这个字符串加上\", too\"后缀",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -244,16 +321,25 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/form.PingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
             },
             "delete": {
                 "description": "接收主键PingID,根据PingID删除该条记录",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -275,7 +361,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/form.PingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
@@ -289,9 +387,6 @@ var doc = `{
                     }
                 ],
                 "description": "管理员创建用户个人信息",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -334,7 +429,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.CreateSysUserRequest"
+                            "$ref": "#/definitions/form.CreateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
@@ -346,9 +453,6 @@ var doc = `{
                     }
                 ],
                 "description": "管理员删除用户个人信息",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -370,7 +474,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.DeleteSysUserRequest"
+                            "$ref": "#/definitions/form.DeleteUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
@@ -384,9 +500,6 @@ var doc = `{
                     }
                 ],
                 "description": "用户查看个人信息",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -401,42 +514,11 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/form.ProfileResponse"
                         }
-                    }
-                }
-            }
-        },
-        "/verifyCaptcha": {
-            "post": {
-                "description": "验证验证码",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "captcha"
-                ],
-                "summary": "验证验证码",
-                "operationId": "verify-captcha",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "验证码id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
                     },
-                    {
-                        "type": "string",
-                        "description": "验证码内容",
-                        "name": "code",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/app.ErrResponse"
                         }
                     }
                 }
@@ -444,6 +526,18 @@ var doc = `{
         }
     },
     "definitions": {
+        "app.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "details": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "form.CaptchaResponse": {
             "type": "object",
             "properties": {
@@ -461,37 +555,30 @@ var doc = `{
                 }
             }
         },
-        "form.CreateSysUserRequest": {
+        "form.CreateUserResponse": {
             "type": "object",
-            "required": [
-                "email",
-                "password",
-                "role",
-                "username"
-            ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "username": {
+                "id": {
                     "type": "string"
                 }
             }
         },
-        "form.DeleteSysUserRequest": {
+        "form.DeleteUserResponse": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
-                "id": {
+                "result": {
                     "type": "string"
+                }
+            }
+        },
+        "form.ListPingResponse": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ping.PingRecord"
+                    }
                 }
             }
         },
@@ -502,6 +589,14 @@ var doc = `{
                     "type": "integer"
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.PingResponse": {
+            "type": "object",
+            "properties": {
+                "reply": {
                     "type": "string"
                 }
             }
@@ -517,16 +612,32 @@ var doc = `{
                 }
             }
         },
+        "form.UpdatePingResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.VerifyCaptchaResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
         "ping.PingRecord": {
             "type": "object",
             "properties": {
-                "createTime": {
+                "create_time": {
                     "type": "string"
                 },
                 "message": {
                     "type": "string"
                 },
-                "pingID": {
+                "ping_id": {
                     "type": "string"
                 },
                 "reply": {

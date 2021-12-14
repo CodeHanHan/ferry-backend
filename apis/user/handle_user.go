@@ -7,9 +7,10 @@ import (
 
 	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
-	modelUsers "github.com/CodeHanHan/ferry-backend/models/users"
+	modelUser "github.com/CodeHanHan/ferry-backend/models/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
-	"github.com/CodeHanHan/ferry-backend/pkg/form"
+	form "github.com/CodeHanHan/ferry-backend/pkg/form/user"
+	formUser "github.com/CodeHanHan/ferry-backend/pkg/form/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/pkg/sender"
@@ -25,12 +26,13 @@ import (
 // @Param password query string true "密码"
 // @Param id query string true "验证码id"
 // @Param code query string true "验证码内容"
-// @Success 200 {object} form.LoginResponse
-// @Accept  json
+// @Success 200 {object} formUser.LoginResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /login [get]
 func Login(c *gin.Context) {
-	var req form.LoginRequest
+	var req formUser.LoginRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
@@ -65,25 +67,26 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, form.LoginResponse{
+	app.OK(c, formUser.LoginResponse{
 		Duration: time.Hour.Microseconds(),
 		Token:    jwtToken,
 	})
 }
 
 // LoginTest godoc
-// @Summary 用户名密码登录
+// @Summary 用户名密码登录(测试用)
 // @Description 获取token
 // @Tags user
 // @ID user-logintest
 // @Param username query string true "用户名"
 // @Param password query string true "密码"
-// @Success 200 {object} form.LoginResponse
-// @Accept  json
+// @Success 200 {object} formUser.LoginResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /logintest [get]
 func LoginTest(c *gin.Context) {
-	var req form.LoginTestRequest
+	var req formUser.LoginTestRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
@@ -111,7 +114,7 @@ func LoginTest(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, form.LoginResponse{
+	app.OK(c, formUser.LoginResponse{
 		Duration: time.Hour.Microseconds(),
 		Token:    jwtToken,
 	})
@@ -122,8 +125,8 @@ func LoginTest(c *gin.Context) {
 // @Description 用户查看个人信息
 // @Tags user
 // @ID user-me
-// @Success 200 {object} form.ProfileResponse
-// @Accept  json
+// @Success 200 {object} formUser.ProfileResponse
+// @Failure 500 {object} app.ErrResponse
 // @Produce  json
 // @Router /user/me [get]
 // @Security BearerAuth
@@ -141,8 +144,8 @@ func Profile(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, form.ProfileResponse{
-		Username: userRecord.UserName,
+	app.OK(c, formUser.ProfileResponse{
+		Username: userRecord.Username,
 		Email:    userRecord.Email,
 	})
 }
@@ -156,13 +159,14 @@ func Profile(c *gin.Context) {
 // @Param password query string true "密码"
 // @Param role query string true "角色"
 // @Param email query string true "邮箱"
-// @Success 200 {object} form.CreateSysUserRequest
-// @Accept  json
+// @Success 200 {object} form.CreateUserResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /user [post]
 // @Security BearerAuth
-func CreateSysUser(c *gin.Context) {
-	var req form.CreateSysUserRequest
+func CreateUser(c *gin.Context) {
+	var req formUser.CreateUserRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "参数验证失败: %v", err)
 		app.ErrorParams(c, err)
@@ -180,13 +184,15 @@ func CreateSysUser(c *gin.Context) {
 		app.InternalServerError(c)
 		return
 	}
-	record := modelUsers.NewUsersTable(username, crypto_pwd, role, email)
+	record := modelUser.NewUserTable(username, crypto_pwd, role, email)
 	if err := user.CreateUserRecord(c, record); err != nil {
 		logger.Error(c, "创建记录失败: %v", err)
 		app.InternalServerError(c)
 		return
 	}
-	app.OK(c, "创建成功")
+	app.OK(c, form.CreateUserResponse{
+		ID: record.ID,
+	})
 }
 
 // Delete godoc
@@ -195,24 +201,19 @@ func CreateSysUser(c *gin.Context) {
 // @Tags user
 // @ID user-deletesysuser
 // @Param id query string true "用户ID"
-// @Success 200 {object} form.DeleteSysUserRequest
-// @Accept  json
+// @Success 200 {object} formUser.DeleteUserResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
 // @Produce  json
 // @Router /user [delete]
 // @Security BearerAuth
-func DeleteSysUser(c *gin.Context) {
-	var req form.DeleteSysUserRequest
+func DeleteUser(c *gin.Context) {
+	var req formUser.DeleteUserRequest
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error(c, "获取信息失败")
 		app.ErrorParams(c, err)
 		return
 	}
-
-	/* senderUsername, _, err := sender.GetSender(c)
-	if err != nil {
-		app.InternalServerError(c)
-		return
-	} */
 
 	uid := req.ID
 	if uid == "0" {
@@ -220,10 +221,14 @@ func DeleteSysUser(c *gin.Context) {
 		app.Error(c, app.Err_Permission_Denied, "删除权限不够")
 		return
 	}
+
 	if err := user.DeleteSysUser(c, uid); err != nil {
 		logger.Error(c, "删除失败:%v", err)
 		app.InternalServerError(c)
 		return
 	}
-	app.OK(c, "删除成功")
+
+	app.OK(c, formUser.DeleteUserResponse{
+		Result: "success",
+	})
 }
