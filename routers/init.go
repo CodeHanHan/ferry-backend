@@ -40,15 +40,15 @@ func InitSwaggerRouter(g *gin.RouterGroup) {
 func InitNoCheckRouter(g *gin.RouterGroup) {
 	ping.RegisterPingRouter(g)
 
-	g.GET("/getCaptcha", userApis.Captcha)
-	g.POST("/verifyCaptcha", userApis.VerifyCaptcha)
+	g.GET("/captcha", userApis.Captcha)
+	g.POST("/captcha", userApis.VerifyCaptcha)
 }
 
 func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGroup {
 	g := r.Group("")
 	g.GET("/login", userApis.Login)
 	g.GET("/logintest", userApis.LoginTest)
-	
+
 	user.RegisterUserRouter(g, mdw...)
 	return g
 }

@@ -28,11 +28,14 @@ func SetUp() error {
 }
 
 //Translate 翻译错误信息
-func Translate(err error) map[string][]string {
+func Translate(err error) interface{} {
 
 	var result = make(map[string][]string)
 
-	errors := err.(validator.ValidationErrors)
+	errors, ok := err.(validator.ValidationErrors)
+	if !ok {
+		return err
+	}
 
 	for _, err := range errors {
 		result[err.Field()] = append(result[err.Field()], err.Translate(trans))
