@@ -9,7 +9,6 @@ import (
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
 	modelUser "github.com/CodeHanHan/ferry-backend/models/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
-	form "github.com/CodeHanHan/ferry-backend/pkg/form/user"
 	formUser "github.com/CodeHanHan/ferry-backend/pkg/form/user"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
@@ -190,7 +189,7 @@ func CreateUser(c *gin.Context) {
 		app.InternalServerError(c)
 		return
 	}
-	app.OK(c, form.CreateUserResponse{
+	app.OK(c, formUser.CreateUserResponse{
 		ID: record.ID,
 	})
 }
