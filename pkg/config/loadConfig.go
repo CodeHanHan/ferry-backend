@@ -1,6 +1,11 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"context"
+
+	"github.com/CodeHanHan/ferry-backend/pkg/logger"
+	"github.com/spf13/viper"
+)
 
 const (
 	ConfigPath = "deploy/config/"
@@ -49,10 +54,12 @@ func SetUp(register func(*Config)) error {
 
 	var config *Config = &Config{}
 	if err := viper.ReadInConfig(); err != nil {
+		logger.Critical(context.Background(), err.Error())
 		return err
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {
+		logger.Critical(context.Background(), err.Error())
 		return err
 	}
 
