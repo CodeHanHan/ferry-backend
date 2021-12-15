@@ -17,6 +17,8 @@ COPY --from=builder /app/ferry-main .
 
 COPY ./deploy/docker-compose/setting.yml /app/deploy/config/setting.yml
 
+COPY ./deploy/config/rbac_model.conf /app/deploy/config/rbac_model.conf
+
 ENTRYPOINT ["./ferry-main"]
 
 EXPOSE 10000
