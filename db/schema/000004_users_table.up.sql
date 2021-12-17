@@ -1,6 +1,7 @@
 CREATE TABLE `user` (
   `id` varchar(100) PRIMARY KEY,
   `username` varchar(255) unique,
+  `nickname` varchar(255),
   `password` varchar(255),
   `email` varchar(255),
   `role` varchar(255),

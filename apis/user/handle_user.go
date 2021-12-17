@@ -3,8 +3,6 @@ package user
 import (
 	"time"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/CodeHanHan/ferry-backend/db"
 	"github.com/CodeHanHan/ferry-backend/db/query/user"
 	modelUser "github.com/CodeHanHan/ferry-backend/models/user"
@@ -14,6 +12,7 @@ import (
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/pkg/sender"
 	"github.com/CodeHanHan/ferry-backend/utils/password"
+	"github.com/gin-gonic/gin"
 )
 
 // Login godoc
@@ -222,12 +221,163 @@ func DeleteUser(c *gin.Context) {
 	}
 
 	if err := user.DeleteSysUser(c, uid); err != nil {
-		logger.Error(c, "删除失败:%v", err)
+		logger.Error(c, "删除失败: %v", err)
 		app.InternalServerError(c)
 		return
 	}
 
 	app.OK(c, formUser.DeleteUserResponse{
+		Result: "success",
+	})
+}
+
+// Upadate godoc
+// @Summary 更新用户信息
+// @Description 用户更新个人信息
+// @Tags user
+// @ID user-updateuser
+// @Param nickname query string false "昵称"
+// @Param email query string false "邮箱"
+// @Success 200 {object} formUser.UpdateUserResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
+// @Produce  json
+// @Router /user/updateuser [patch]
+// @Security BearerAuth
+func UpdateUser(c *gin.Context) {
+	sendername, _, err := sender.GetSender(c)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	var req formUser.UpdateUserRequest
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error(c, "获取信息失败: %v", err)
+		app.ErrorParams(c, err)
+		return
+	}
+
+	nickname := req.Nickname
+	email := req.Email
+	filter1 := db.NewFilter().Set("username", sendername)
+	filter2 := db.NewFilter().Set("nickname", nickname).Set("email", email)
+
+	if err := user.UpdateUserRecord(c, filter1, filter2); err != nil {
+		logger.Error(c, "更新信息失败: %v", err)
+		app.InternalServerError(c)
+		return
+	}
+
+	app.OK(c, formUser.UpdateUserResponse{
+		Result: "success",
+	})
+}
+
+// AdminUpadate godoc
+// @Summary 管理员更新用户信息
+// @Description 管理员更新个人信息
+// @Tags user
+// @ID user-adminupdateuser
+// @Param username query string true "Username"
+// @Param nickname query string false "昵称"
+// @Param password query string false "密码"
+// @Param email query string false "邮箱"
+// @Success 200 {object} formUser.UpdateUserResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
+// @Produce  json
+// @Router /user/adminupdateuser [patch]
+// @Security BearerAuth
+func AdminUpdateUser(c *gin.Context) {
+	var req formUser.AdminUpdateUserRequest
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error(c, "获取信息失败: %v", err)
+		app.ErrorParams(c, err)
+		return
+	}
+	username := req.Username
+	nickname := req.Nickname
+	pwd := req.Password
+	email := req.Email
+
+	crypto_pwd, err := password.HashPassword(pwd)
+	if err != nil {
+		logger.Error(c, "密码加密失败: %v", err)
+		app.InternalServerError(c)
+		return
+	}
+
+	filter1 := db.NewFilter().Set("username", username)
+	filter2 := db.NewFilter().Set("nickname", nickname).Set("password", crypto_pwd).Set("email", email)
+
+	if err := user.UpdateUserRecord(c, filter1, filter2); err != nil {
+		logger.Error(c, "更新信息失败: %v", err)
+		app.InternalServerError(c)
+		return
+
+	}
+
+	app.OK(c, formUser.UpdateUserResponse{
+		Result: "success",
+	})
+}
+
+// Changepassword godoc
+// @Summary 用户更新密码
+// @Description 用户更新密码
+// @Tags user
+// @ID user-changepassword
+// @Param oldpassword query string true "旧密码"
+// @Param newpassword query string true "新密码"
+// @Success 200 {object} formUser.UpdateUserResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
+// @Produce  json
+// @Router /user/changepassword [patch]
+// @Security BearerAuth
+func ChangePassword(c *gin.Context) {
+	var req formUser.ChangePwdRequest
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error(c, "获取信息失败: %v", err)
+		app.ErrorParams(c, err)
+		return
+	}
+	newPwd := req.NewPassword
+	oldPwd := req.OldPassword
+
+	sender, _, err := sender.GetSender(c)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	filter1 := db.NewFilter().Set("username", sender)
+	userRecord, err := user.GetByUserName(c, filter1)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	if err := password.CheckPassword(oldPwd, userRecord.Password); err != nil { // check用户输入的原密码和数据库中的密码
+		app.Error(c, app.Err_Permission_Denied, "原始密码输入错误")
+		return
+	}
+
+	crypto_pwd, err := password.HashPassword(newPwd) //新密码进行密码加密
+	if err != nil {
+		logger.Error(c, "密码加密失败: %v", err)
+		app.InternalServerError(c)
+		return
+	}
+
+	filter2 := db.NewFilter().Set("password", crypto_pwd)
+	if err := user.UpdateUserRecord(c, filter1, filter2); err != nil { //将新密码插入到数据库中
+		logger.Error(c, "更新密码失败: %v", err)
+		app.InternalServerError(c)
+	}
+
+	app.OK(c, formUser.UpdateUserResponse{
 		Result: "success",
 	})
 }

@@ -11,5 +11,9 @@ func RegisterUserRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
 		pingGroup.GET("/me", user.Profile)
 		pingGroup.POST("", user.CreateUser)
 		pingGroup.DELETE("", user.DeleteUser)
+		pingGroup.PATCH("/updateuser", user.UpdateUser)
+		pingGroup.PATCH("/adminupdateuser", user.AdminUpdateUser)
+		pingGroup.PATCH("/changepassword", user.ChangePassword)
+
 	}
 }
