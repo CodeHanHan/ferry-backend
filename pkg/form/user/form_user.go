@@ -53,3 +53,22 @@ type DeleteUserRequest struct {
 type DeleteUserResponse struct {
 	Result string `json:"result"`
 }
+
+type UpdateUserRequest struct {
+	Nickname string `json:"nickname" form:"nickname"`
+	Password string `json:"password" form:"password"`
+	Email    string `json:"email" form:"email" binding:"email"`
+}
+type AdminUpdateUserRequest struct {
+	UpdateUserRequest
+	Username string `json:"username" form:"username" binding:"required"`
+}
+
+type UpdateUserResponse struct {
+	Result string `json:"result"`
+}
+
+type ChangePwdRequest struct {
+	OldPassword string `json:"oldpassword" form:"oldpassword" binding:"required"`
+	NewPassword string `json:"newpassword" form:"newpassword" binding:"required"`
+}

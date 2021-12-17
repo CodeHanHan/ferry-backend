@@ -60,6 +60,11 @@ definitions:
       result:
         type: string
     type: object
+  form.UpdateUserResponse:
+    properties:
+      result:
+        type: string
+    type: object
   form.VerifyCaptchaResponse:
     properties:
       result:
@@ -397,6 +402,83 @@ paths:
       summary: 创建用户信息
       tags:
       - user
+  /user/adminupdateuser:
+    patch:
+      description: 管理员更新个人信息
+      operationId: user-adminupdateuser
+      parameters:
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 昵称
+        in: query
+        name: nickname
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        type: string
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: 管理员更新用户信息
+      tags:
+      - user
+  /user/changepassword:
+    patch:
+      description: 用户更新密码
+      operationId: user-changepassword
+      parameters:
+      - description: 旧密码
+        in: query
+        name: oldpassword
+        required: true
+        type: string
+      - description: 新密码
+        in: query
+        name: newpassword
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: 用户更新密码
+      tags:
+      - user
   /user/me:
     get:
       description: 用户查看个人信息
@@ -415,6 +497,39 @@ paths:
       security:
       - BearerAuth: []
       summary: 查看个人信息
+      tags:
+      - user
+  /user/updateuser:
+    patch:
+      description: 用户更新个人信息
+      operationId: user-updateuser
+      parameters:
+      - description: 昵称
+        in: query
+        name: nickname
+        type: string
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/form.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: 更新用户信息
       tags:
       - user
 securityDefinitions:

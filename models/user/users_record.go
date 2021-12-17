@@ -11,6 +11,7 @@ const UserTableName = "user"
 type UserTable struct {
 	ID         string     `gorm:"column:id;primary_key" json:"id"`
 	Username   string     `gorm:"column:username;unique" json:"username"`
+	Nickname   string	  `gorm:"column:nickname" json:"nickname"`
 	Password   string     `gorm:"column:password" json:"password"`
 	Email      string     `gorm:"column:email" json:"email"`
 	Role       string     `gorm:"column:role" json:"role"`

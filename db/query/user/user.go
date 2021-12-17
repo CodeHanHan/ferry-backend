@@ -34,3 +34,11 @@ func DeleteSysUser(ctx context.Context, id string) error {
 	}
 	return nil
 }
+
+func UpdateUserRecord(ctx context.Context, filter1 *db.Filter, filter2 *db.Filter) error {
+	if err := db.Store.Table(modelUser.UserTableName).Where(filter1.Params).Updates(filter2.Params).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+	return nil
+}
