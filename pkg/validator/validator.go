@@ -23,6 +23,10 @@ func SetUp() error {
 
 	//获取gin的校验器
 	validate := binding.Validator.Engine().(*validator.Validate)
+
+	// 注册自定义校验器
+	RegisterCustomizeValidator(validate)
+
 	//注册翻译器
 	return zh_translations.RegisterDefaultTranslations(validate, trans)
 }
@@ -41,4 +45,9 @@ func Translate(err error) interface{} {
 		result[err.Field()] = append(result[err.Field()], err.Translate(trans))
 	}
 	return result
+}
+
+// 注册自定义验证器
+func RegisterCustomizeValidator(v *validator.Validate) {
+	_ = v.RegisterValidation("is_admin", roleIsAdminValidator) // FIXME 错误处理
 }

@@ -23,19 +23,19 @@ const (
 )
 
 type Role struct {
-	RoleID     string    `gorm:"column:role_id;primary_key;" json:"role_id"`
-	RoleName   string    `gorm:"column:role_name" json:"role_name"`
-	Status     int       `gorm:"column:status" json:"status"`
-	RoleKey    string    `gorm:"column:role_key" json:"role_key"`
-	RoleSort   int       `gorm:"column:role_sort" json:"role_sort"`
-	Flag       string    `gorm:"column:flag" json:"flag"`
-	CreateBy   string    `gorm:"column:create_by" json:"create_by"`
-	UpdateBy   string    `gorm:"column:update_by" json:"update_by"`
-	Remark     string    `gorm:"column:remark" json:"remark"`
-	Admin      int       `gorm:"column:admin" json:"admin"`
-	CreateTime time.Time `gorm:"column:create_time" json:"create_time"`
-	UpdateTime time.Time `gorm:"column:update_time" json:"update_time"`
-	DeleteTime time.Time `gorm:"column:delete_time" json:"delete_time"`
+	RoleID     string     `gorm:"column:role_id;primary_key;" json:"role_id"`
+	RoleName   string     `gorm:"column:role_name" json:"role_name"`
+	Status     int        `gorm:"column:status" json:"status"`
+	RoleKey    string     `gorm:"column:role_key" json:"role_key"`
+	RoleSort   int        `gorm:"column:role_sort" json:"role_sort"`
+	Flag       string     `gorm:"column:flag" json:"flag"`
+	CreateBy   string     `gorm:"column:create_by" json:"create_by"`
+	UpdateBy   string     `gorm:"column:update_by" json:"update_by"`
+	Remark     string     `gorm:"column:remark" json:"remark"`
+	Admin      int        `gorm:"column:admin" json:"admin"`
+	CreateTime *time.Time `gorm:"column:create_time" json:"create_time" default:"2000-01-01 00:00:00"`
+	UpdateTime *time.Time `gorm:"column:update_time" json:"update_time" default:"2000-01-01 00:00:00"`
+	DeleteTime *time.Time `gorm:"column:delete_time" json:"delete_time" default:"2000-01-01 00:00:00"`
 }
 
 func NewRole(rolename string, remark string, admin IsAdmin, createBy string) *Role {
