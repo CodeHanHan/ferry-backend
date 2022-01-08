@@ -81,6 +81,32 @@ definitions:
       reply:
         type: string
     type: object
+  role.CreateRoleRequest:
+    properties:
+      is_admin:
+        type: integer
+      remark:
+        type: string
+      role_name:
+        type: string
+    required:
+    - is_admin
+    - role_name
+    type: object
+  role.CreateRoleResponse:
+    properties:
+      role_id:
+        type: string
+      role_key:
+        type: string
+      role_name:
+        type: string
+    type: object
+  role.DeleteRoleResponse:
+    properties:
+      result:
+        type: string
+    type: object
 info:
   contact: {}
   description: 工单系统
@@ -328,6 +354,71 @@ paths:
       summary: 更新记录信息
       tags:
       - ping
+  /role:
+    post:
+      consumes:
+      - application/json
+      description: 根据一个RoleName创建角色，RoleName 要求不能重复
+      operationId: role-create
+      parameters:
+      - description: remark 可空
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/role.CreateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/role.CreateRoleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: 创建角色
+      tags:
+      - role
+  /role/{role_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除角色，幂等操作
+      operationId: role-delete
+      parameters:
+      - description: 角色唯一id
+        in: path
+        name: role_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/role.DeleteRoleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.ErrResponse'
+      security:
+      - BearerAuth: []
+      summary: 删除角色
+      tags:
+      - role
   /user:
     delete:
       description: 管理员删除用户个人信息
