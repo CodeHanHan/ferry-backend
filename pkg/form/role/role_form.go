@@ -1,5 +1,7 @@
 package role
 
+import "github.com/CodeHanHan/ferry-backend/models/role"
+
 type CreateRoleRequest struct {
 	RoleName string `json:"role_name" form:"role_name" binding:"required"`
 	IsAdmin  *int   `json:"is_admin" form:"is_admin" binding:"required,is_admin"`
@@ -18,4 +20,14 @@ type DeleteRoleRequest struct {
 
 type DeleteRoleResponse struct {
 	Result string `json:"result"`
+}
+
+type ListRoleRequest struct {
+	Offset *int `json:"offset" form:"offset" binding:"required"`
+	Limit  int  `json:"limit" form:"limit" binding:"required"`
+}
+
+type ListRoleResponse struct {
+	Roles  []*role.Role
+	Length int
 }

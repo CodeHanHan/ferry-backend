@@ -92,3 +92,38 @@ func DeleteRole(c *gin.Context) {
 		Result: "success",
 	})
 }
+
+// DeleteRole godoc
+// @Summary 查询角色列表
+// @Description 根据offset和limit查询角色列表
+// @Tags role
+// @ID role-list
+// @Param offset query int true "偏移"
+// @Param limit query int true "限制"
+// @Success 200 {object} formRole.ListRoleResponse
+// @Failure 500 {object} app.ErrResponse
+// @Failure 400 {object} app.ErrResponse
+// @Produce  json
+// @Router /role [get]
+// @Security BearerAuth
+func ListRoles(c *gin.Context) {
+	var req formRole.ListRoleRequest
+	if err := c.ShouldBind(&req); err != nil {
+		logger.ErrorParams(c, err)
+		app.ErrorParams(c, err)
+		return
+	}
+
+	list, err := role.SearchRole(c, *req.Offset, req.Limit)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	resp := formRole.ListRoleResponse{
+		Roles:  list,
+		Length: len(list),
+	}
+
+	app.OK(c, resp)
+}

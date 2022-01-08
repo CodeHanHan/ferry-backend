@@ -32,3 +32,12 @@ func DeleteRoleById(ctx context.Context, roleId string) error {
 
 	return nil
 }
+
+func SearchRole(ctx context.Context, offset, limit int) (list []*modelRole.Role, err error) {
+	if err := db.Store.Table(modelRole.RoleTableName).Offset(offset).Limit(limit).Find(&list).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+
+	return
+}
