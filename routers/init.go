@@ -9,6 +9,7 @@ import (
 	_ "github.com/CodeHanHan/ferry-backend/docs"
 	"github.com/CodeHanHan/ferry-backend/middleware"
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
+	"github.com/CodeHanHan/ferry-backend/routers/dept"
 	"github.com/CodeHanHan/ferry-backend/routers/ping"
 	"github.com/CodeHanHan/ferry-backend/routers/role"
 	"github.com/CodeHanHan/ferry-backend/routers/user"
@@ -52,5 +53,6 @@ func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGr
 
 	user.RegisterUserRouter(g, mdw...)
 	role.RegisterRoleRouter(g, mdw...)
+	dept.RegisterDeptRouter(g, mdw...)
 	return g
 }
