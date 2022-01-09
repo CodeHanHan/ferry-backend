@@ -12,6 +12,16 @@ services:
       - ${MYSQL_PORT}:3306
     restart: always
 
+  ferry-static:
+    image: ferry-nginx
+    container_name: ferry-static
+    volumes:
+      - ~/.ferry-data/nginx/data:/usr/share/nginx
+      - ~/.ferry-data/nginx/log:/var/log/nginx
+    ports:
+      - 10081:80
+    restart: always
+
   ferry-main:
     image: ferry-main:latest
     container_name: ferry-main
@@ -20,6 +30,7 @@ services:
     restart: on-failure
     depends_on:
       - ferry-db
+      - ferry-static
 
   ferry-migrate:
     image: migrate/migrate
