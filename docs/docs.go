@@ -432,6 +432,56 @@ var doc = `{
                     }
                 }
             },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新角色信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "更新角色",
+                "operationId": "role-update",
+                "parameters": [
+                    {
+                        "description": "角色id",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/role.UpdateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/role.UpdateRoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -484,6 +534,51 @@ var doc = `{
             }
         },
         "/role/{role_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "根据角色id查询角色信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "查询角色",
+                "operationId": "role-get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "角色id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/role.GetRoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -1018,6 +1113,14 @@ var doc = `{
                 }
             }
         },
+        "role.GetRoleResponse": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/role.Role"
+                }
+            }
+        },
         "role.ListRoleResponse": {
             "type": "object",
             "properties": {
@@ -1076,6 +1179,61 @@ var doc = `{
                 "update_time": {
                     "type": "string",
                     "default": "2000-01-01 00:00:00"
+                }
+            }
+        },
+        "role.UpdateRoleRequest": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "type": "integer"
+                },
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "flag": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                },
+                "role_key": {
+                    "type": "string"
+                },
+                "role_name": {
+                    "type": "string"
+                },
+                "role_sort": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                }
+            }
+        },
+        "role.UpdateRoleResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
                 }
             }
         }

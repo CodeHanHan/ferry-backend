@@ -26,6 +26,10 @@ migrate-down:
 migrate-to-%:
 	@cd db && make migrate-to-$*
 
+re-migrate:
+	@cd db && make migrate-to-2
+	@cd db && make migrate-up
+
 # 构建数据库、应用镜像
 build-images:
 	@cd db && make build

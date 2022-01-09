@@ -41,3 +41,21 @@ func SearchRole(ctx context.Context, offset, limit int) (list []*modelRole.Role,
 
 	return
 }
+
+func GetRole(ctx context.Context, f *db.Filter) (role *modelRole.Role, err error) {
+	if err := db.Store.Table(modelRole.RoleTableName).Where(f.Params).Take(&role).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+
+	return
+}
+
+func UpdateRole(ctx context.Context, role *modelRole.Role) error {
+	if err := db.Store.Table(modelRole.RoleTableName).Updates(role).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+
+	return nil
+}
