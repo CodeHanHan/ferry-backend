@@ -31,3 +31,17 @@ type ListRoleResponse struct {
 	Roles  []*role.Role
 	Length int
 }
+
+type GetRoleRequest struct {
+	RoleID string `json:"role_id" uri:"role_id" binding:"required"`
+}
+
+type GetRoleResponse struct {
+	Role *role.Role
+}
+
+type UpdateRoleRequest role.Role
+
+type UpdateRoleResponse struct {
+	Result string `json:"result"`
+}
