@@ -97,7 +97,7 @@ func DeleteRole(c *gin.Context) {
 	})
 }
 
-// DeleteRole godoc
+// ListRole godoc
 // @Summary 查询角色列表
 // @Description 根据offset和limit查询角色列表
 // @Tags role

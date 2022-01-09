@@ -91,6 +91,255 @@ var doc = `{
                 }
             }
         },
+        "/dept": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "根据offset和limit查询部门列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dept"
+                ],
+                "summary": "查询部门列表",
+                "operationId": "dept-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "偏移",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dept.ListDeptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新部门信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dept"
+                ],
+                "summary": "更新部门",
+                "operationId": "dept-update",
+                "parameters": [
+                    {
+                        "description": "部门id",
+                        "name": "dept",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dept.UpdateDeptRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dept.UpdateDeptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "根据一个DeptName创建部门，DeptName 要求不能重复",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dept"
+                ],
+                "summary": "创建部门",
+                "operationId": "dept-create",
+                "parameters": [
+                    {
+                        "description": "参数不可空",
+                        "name": "dept",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dept.CreateDeptRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dept.CreateDeptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/{dept_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "根据部门id查询部门信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dept"
+                ],
+                "summary": "查询部门",
+                "operationId": "dept-get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "部门id",
+                        "name": "dept_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dept.GetDeptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除部门，幂等操作",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dept"
+                ],
+                "summary": "删除部门",
+                "operationId": "dept-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "部门唯一id",
+                        "name": "dept_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dept.DeleteDeptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "get": {
                 "description": "获取token",
@@ -954,6 +1203,170 @@ var doc = `{
                 },
                 "details": {},
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dept.CreateDeptRequest": {
+            "type": "object",
+            "required": [
+                "dept_name",
+                "parent_id"
+            ],
+            "properties": {
+                "dept_name": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dept.CreateDeptResponse": {
+            "type": "object",
+            "properties": {
+                "dept_id": {
+                    "type": "string"
+                },
+                "dept_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dept.DeleteDeptResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "dept.Dept": {
+            "type": "object",
+            "properties": {
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "dept_id": {
+                    "type": "string"
+                },
+                "dept_name": {
+                    "type": "string"
+                },
+                "dept_path": {
+                    "type": "string"
+                },
+                "dept_sort": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "leader": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                }
+            }
+        },
+        "dept.GetDeptResponse": {
+            "type": "object",
+            "properties": {
+                "dept": {
+                    "$ref": "#/definitions/dept.Dept"
+                }
+            }
+        },
+        "dept.ListDeptResponse": {
+            "type": "object",
+            "properties": {
+                "dept": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dept.Dept"
+                    }
+                },
+                "length": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dept.UpdateDeptRequest": {
+            "type": "object",
+            "properties": {
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "dept_id": {
+                    "type": "string"
+                },
+                "dept_name": {
+                    "type": "string"
+                },
+                "dept_path": {
+                    "type": "string"
+                },
+                "dept_sort": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "leader": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                }
+            }
+        },
+        "dept.UpdateDeptResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
                     "type": "string"
                 }
             }
