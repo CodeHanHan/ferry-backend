@@ -45,3 +45,15 @@ func TestGetFileTypeByFileBytes(t *testing.T) {
 	require.Equal(t, "xls", GetFileTypeByFileBytes(dataXls))
 	require.Equal(t, "xlsx", GetFileTypeByFileBytes(dataXlsx))
 }
+
+func Test_Split(t *testing.T) {
+	dir, file, ext := Split("a/b/c/d.txt")
+	require.Equal(t, "a/b/c/", dir)
+	require.Equal(t, "d", file)
+	require.Equal(t, ".txt", ext)
+
+	dir, file, ext = Split("a/b/c/d.e.txt")
+	require.Equal(t, "a/b/c/", dir)
+	require.Equal(t, "d.e", file)
+	require.Equal(t, ".txt", ext)
+}
