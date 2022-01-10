@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 	"sync"
@@ -139,4 +140,12 @@ func Copy(src, dst string) (int64, error) {
 
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+func Split(filepath string) (dir, file, ext string) {
+	dir, name := path.Split(filepath)
+	ext = path.Ext(name)
+	file = name[0 : len(name)-len(ext)]
+
+	return
 }
