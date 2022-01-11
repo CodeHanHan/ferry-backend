@@ -8,6 +8,6 @@ up:
 build:
 	@docker build -t ferry-nginx .
 
-config-up:
+put-config:
 	@docker cp ./nginx-conf/nginx.conf ferry-static:/etc/nginx/conf.d/default.conf
-	# @docker restart ferry-static
+	@docker exec ferry-static nginx -s reload
