@@ -6,14 +6,14 @@ import (
 )
 
 func RegisterUserRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
-	pingGroup := g.Group("/user").Use(mdw...)
+	userGroup := g.Group("/user").Use(mdw...)
 	{
-		pingGroup.GET("/me", user.Profile)
-		pingGroup.POST("", user.CreateUser)
-		pingGroup.DELETE("", user.DeleteUser)
-		pingGroup.PATCH("/updateuser", user.UpdateUser)
-		pingGroup.PATCH("/adminupdateuser", user.AdminUpdateUser)
-		pingGroup.PATCH("/changepassword", user.ChangePassword)
-
+		userGroup.GET("/me", user.Profile)
+		userGroup.POST("", user.CreateUser)
+		userGroup.DELETE("", user.DeleteUser)
+		userGroup.PATCH("/updateuser", user.UpdateUser)
+		userGroup.PATCH("/adminupdateuser", user.AdminUpdateUser)
+		userGroup.PATCH("/changepassword", user.ChangePassword)
+		// userGroup.POST("/upload", user.UploadAvatar)
 	}
 }

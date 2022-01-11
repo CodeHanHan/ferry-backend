@@ -11,7 +11,7 @@ const UserTableName = "user"
 type UserTable struct {
 	ID         string     `gorm:"column:id;primary_key" json:"id"`
 	Username   string     `gorm:"column:username;unique" json:"username"`
-	Nickname   string	  `gorm:"column:nickname" json:"nickname"`
+	Nickname   string     `gorm:"column:nickname" json:"nickname"`
 	Password   string     `gorm:"column:password" json:"password"`
 	Email      string     `gorm:"column:email" json:"email"`
 	Role       string     `gorm:"column:role" json:"role"`
@@ -20,7 +20,7 @@ type UserTable struct {
 
 func NewUserTable(username string, password string, role string, email string) *UserTable {
 	return &UserTable{
-		ID:       idutil.NewHexId(),
+		ID:       idutil.GetId("user"),
 		Username: username,
 		Password: password,
 		Role:     role,

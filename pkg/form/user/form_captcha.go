@@ -1,4 +1,4 @@
-package form
+package user
 
 // get: /captcha
 type CaptchaResponse struct {
