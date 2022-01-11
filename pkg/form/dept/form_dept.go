@@ -26,7 +26,7 @@ type ListDeptRequest struct {
 }
 
 type ListDeptResponse struct {
-	Dept  []*dept.Dept
+	Dept   []*dept.Dept
 	Length int
 }
 
