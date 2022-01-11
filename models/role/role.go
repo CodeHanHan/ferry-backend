@@ -40,7 +40,7 @@ type Role struct {
 
 func NewRole(rolename string, remark string, admin IsAdmin, createBy string) *Role {
 	return &Role{
-		RoleID:   idutil.NewHexId(),
+		RoleID:   idutil.GetId("role"),
 		RoleName: rolename,
 		Status:   int(RoleActive),
 		RoleKey:  idutil.NewHexId(),
