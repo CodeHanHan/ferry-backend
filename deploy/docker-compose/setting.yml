@@ -2,6 +2,7 @@ version: v0.0.1
 mode: dev
 application:
   server_address: 0.0.0.0:10000
+  static_prefix: http://101.43.99.162:10081/
 database:
   level: 1 # 1: Silent, 2: Error, 3: Warn, 4: Info
   driver: mysql
@@ -18,3 +19,4 @@ jwt:
 author:
   - yangchnet
   - HT-CHEN520
+  - dadadedada666

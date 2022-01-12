@@ -38,7 +38,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.CaptchaResponse"
+                            "$ref": "#/definitions/user.CaptchaResponse"
                         }
                     },
                     "500": {
@@ -79,7 +79,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.VerifyCaptchaResponse"
+                            "$ref": "#/definitions/user.VerifyCaptchaResponse"
                         }
                     },
                     "400": {
@@ -385,7 +385,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.LoginResponse"
+                            "$ref": "#/definitions/user.LoginResponse"
                         }
                     },
                     "400": {
@@ -434,7 +434,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.LoginResponse"
+                            "$ref": "#/definitions/user.LoginResponse"
                         }
                     },
                     "400": {
@@ -927,7 +927,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.CreateUserResponse"
+                            "$ref": "#/definitions/user.CreateUserResponse"
                         }
                     },
                     "400": {
@@ -972,7 +972,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.DeleteUserResponse"
+                            "$ref": "#/definitions/user.DeleteUserResponse"
                         }
                     },
                     "400": {
@@ -1037,7 +1037,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.UpdateUserResponse"
+                            "$ref": "#/definitions/user.UpdateUserResponse"
                         }
                     },
                     "400": {
@@ -1091,7 +1091,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.UpdateUserResponse"
+                            "$ref": "#/definitions/user.UpdateUserResponse"
                         }
                     },
                     "400": {
@@ -1129,7 +1129,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.ProfileResponse"
+                            "$ref": "#/definitions/user.ProfileResponse"
                         }
                     },
                     "500": {
@@ -1175,7 +1175,59 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/form.UpdateUserResponse"
+                            "$ref": "#/definitions/user.UpdateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/upload": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "上传头像图片，只支持png, jpeg, jpg",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "上传头像",
+                "operationId": "user-avatar",
+                "parameters": [
+                    {
+                        "description": "用户头像",
+                        "name": "avatar",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UploadAvatarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UploadAvatarResponse"
                         }
                     },
                     "400": {
@@ -1371,39 +1423,6 @@ var doc = `{
                 }
             }
         },
-        "form.CaptchaResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "data": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "form.CreateUserResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "form.DeleteUserResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
         "form.ListPingResponse": {
             "type": "object",
             "properties": {
@@ -1415,17 +1434,6 @@ var doc = `{
                 }
             }
         },
-        "form.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "duration": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "form.PingResponse": {
             "type": "object",
             "properties": {
@@ -1434,34 +1442,7 @@ var doc = `{
                 }
             }
         },
-        "form.ProfileResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "form.UpdatePingResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
-        "form.UpdateUserResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
-        "form.VerifyCaptchaResponse": {
             "type": "object",
             "properties": {
                 "result": {
@@ -1643,6 +1624,103 @@ var doc = `{
             }
         },
         "role.UpdateRoleResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CaptchaResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.DeleteUserResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.ProfileResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UploadAvatarRequest": {
+            "type": "object",
+            "required": [
+                "file_name",
+                "img_b64"
+            ],
+            "properties": {
+                "file_name": {
+                    "type": "string"
+                },
+                "img_b64": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UploadAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "abs_path": {
+                    "type": "string"
+                },
+                "file_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.VerifyCaptchaResponse": {
             "type": "object",
             "properties": {
                 "result": {
