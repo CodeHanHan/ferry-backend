@@ -157,7 +157,7 @@ func Profile(c *gin.Context) {
 // @Param password query string true "密码"
 // @Param role query string true "角色"
 // @Param email query string true "邮箱"
-// @Success 200 {object} form.CreateUserResponse
+// @Success 200 {object} formUser.CreateUserResponse
 // @Failure 500 {object} app.ErrResponse
 // @Failure 400 {object} app.ErrResponse
 // @Produce  json
