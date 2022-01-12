@@ -90,13 +90,13 @@ POST http://wsl:10001/ping/create
 访问这个接口时，表单应包含`message`，否则无法验证通过。一切顺利的话，程序将返回你发送的message值加上`, too`后缀。如`hello` -> `hello, too`。
 
 ## 5. 调试（vscode）
-打开vscode，点击调试选项卡  
+打开vscode，点击调试选项卡    
 ![20211122145329](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122145329.png)
 
-点击`create a launch.json file`创建`launch.json`文件。  
+点击`create a launch.json file`创建`launch.json`文件。    
 ![20211122145727](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122145727.png)
 
-创建一个`attach to local process`配置
+创建一个`attach to local process`配置  
 ![20211122145827](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122145827.png)
 
 创建完成后配置如下：
@@ -117,14 +117,14 @@ POST http://wsl:10001/ping/create
 
 确保项目此时已经**本地启动**
 
-设置断点：
+设置断点：  
 ![20211122150044](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122150044.png)
 
-开始调试
+开始调试  
 ![20211122150008](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122150008.png)
 
-附加进程
+附加进程  
 ![20211122150138](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122150138.png)
 
-访问`http://wsl:10000/ping/create`，命中断点
+访问`http://wsl:10000/ping/create`，命中断点  
 ![20211122150325](https://raw.githubusercontent.com/lich-Img/blogImg/master/img/20211122150325.png)

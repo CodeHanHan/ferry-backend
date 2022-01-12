@@ -34,9 +34,7 @@ type GetDeptRequest struct {
 	DeptID string `json:"dept_id" uri:"dept_id" binding:"required"`
 }
 
-type GetDeptResponse struct {
-	Dept *dept.Dept
-}
+type GetDeptResponse dept.Dept 
 
 type UpdateDeptRequest dept.Dept
 

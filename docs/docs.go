@@ -1346,8 +1346,50 @@ var doc = `{
         "dept.GetDeptResponse": {
             "type": "object",
             "properties": {
-                "dept": {
-                    "$ref": "#/definitions/dept.Dept"
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "dept_id": {
+                    "type": "string"
+                },
+                "dept_name": {
+                    "type": "string"
+                },
+                "dept_path": {
+                    "type": "string"
+                },
+                "dept_sort": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "leader": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
                 }
             }
         },

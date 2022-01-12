@@ -1,7 +1,7 @@
 CREATE TABLE `dept` (
     `dept_id` varchar(255) PRIMARY KEY NOT NULL,
-    `parent_id` varchar(255)DEFAULT NULL,
-    `dept_path` varchar(255) DEFAULT NULL,
+    `parent_id` varchar(255) DEFAULT NULL,
+    `dept_path` varchar(255) UNIQUE  NOT NULL ,
     `dept_name` varchar(128) DEFAULT NULL,
     `dept_sort` int DEFAULT NULL,
     `leader` varchar(255) DEFAULT NULL,
