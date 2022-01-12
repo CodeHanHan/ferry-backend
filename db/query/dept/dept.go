@@ -22,6 +22,35 @@ func CreateDept(ctx context.Context, dept *modelDept.Dept) error {
 	return nil
 }
 
+func ParentExist(ctx context.Context, parent_id string) error {
+	var dept modelDept.Dept
+	if err := db.Store.Table(modelDept.DeptTableName).Where("dept_id", parent_id).Take(&dept).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+	return nil
+}
+
+func FindDeptPath(ctx context.Context, parent_id string) (string, error) {
+	if parent_id == "0" {
+		return "", nil
+	}
+	f := db.NewFilter().Set("dept_id", parent_id)
+	var path string
+	for {
+		dept_, err := GetDept(ctx, f)
+		if err != nil {
+			return "", err
+		}
+		path = dept_.DeptName + "/" + path
+		f = db.NewFilter().Set("dept_id", dept_.ParentID)
+		if dept_.ParentID == "0" {
+			break
+		}
+	}
+	return path, nil
+}
+
 func DeleteDeptById(ctx context.Context, deptId string) error {
 	var dept modelDept.Dept
 	if err := db.Store.Table(modelDept.DeptTableName).Where(map[string]interface{}{"dept_id": deptId}).Delete(&dept).Error; err != nil {
@@ -58,3 +87,5 @@ func UpdateDept(ctx context.Context, dept *modelDept.Dept) error {
 	return nil
 
 }
+
+// func UpdateDeptPath(ctx context.Context)

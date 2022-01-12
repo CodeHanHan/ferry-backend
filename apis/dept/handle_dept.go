@@ -45,10 +45,25 @@ func CreateDept(c *gin.Context) {
 		return
 	}
 
-	newDept := modelDept.NewDept(req.DeptName, req.ParentID, creator)
+	if req.ParentID != "0" {
+		if err := dept.ParentExist(c, req.ParentID); err != nil {
+			app.Error(c, app.Err_Invalid_Argument, "ParentID doesn't exists")
+			return
+		}
+
+	}
+
+	dept_path, err := dept.FindDeptPath(c, req.ParentID)
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+	dept_path += req.DeptName
+
+	newDept := modelDept.NewDept(req.DeptName, req.ParentID, creator, dept_path)
 	if err := dept.CreateDept(c, newDept); err != nil {
 		if errors.Is(db.ErrDuplicateValue, err) {
-			app.Error(c, app.Err_Invalid_Argument, "DeptName already exists")
+			app.Error(c, app.Err_Invalid_Argument, err.Error())
 			return
 		}
 		app.InternalServerError(c)
@@ -161,11 +176,7 @@ func GetDept(c *gin.Context) {
 		return
 	}
 
-	resp := formDept.GetDeptResponse{
-		Dept: dept,
-	}
-
-	app.OK(c, resp)
+	app.OK(c, dept)
 }
 
 //UpdateDept godoc

@@ -8,6 +8,8 @@ import (
 
 const DeptTableName = "dept"
 
+var TimeNow = time.Now()
+
 type DeptStatus int
 
 const (
@@ -32,13 +34,15 @@ type Dept struct {
 	DeleteTime *time.Time `gorm:"column:delete_time" json:"delete_time" default:"2000-01-01 00:00:00"`
 }
 
-func NewDept(deptname string, parent_id string, create_by string) *Dept {
+func NewDept(deptname string, parent_id string, create_by string, dept_path string) *Dept {
 	return &Dept{
-		DeptID:   idutil.GetId("dept"),
-		DeptName: deptname,
-		ParentID: parent_id,
-		Status:   int(DeptActive),
-		CreateBy: create_by,
+		DeptID:     idutil.GetId("dept"),
+		DeptName:   deptname,
+		ParentID:   parent_id,
+		Status:     int(DeptActive),
+		CreateBy:   create_by,
+		CreateTime: &TimeNow,
+		DeptPath:   dept_path,
 	}
 
 }
