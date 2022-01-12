@@ -14,6 +14,6 @@ func RegisterUserRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
 		userGroup.PATCH("/updateuser", user.UpdateUser)
 		userGroup.PATCH("/adminupdateuser", user.AdminUpdateUser)
 		userGroup.PATCH("/changepassword", user.ChangePassword)
-		// userGroup.POST("/upload", user.UploadAvatar)
+		userGroup.POST("/upload", user.UploadAvatar)
 	}
 }

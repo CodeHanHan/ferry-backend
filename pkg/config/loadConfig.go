@@ -25,6 +25,7 @@ type Config struct {
 
 type AppConfig struct {
 	ServerAddress string `mapstructure:"server_address"`
+	StaticPrefix  string `mapstructure:"static_prefix"`
 }
 
 type DBConfig struct {

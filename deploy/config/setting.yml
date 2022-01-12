@@ -2,6 +2,7 @@ version: v0.0.1
 mode: dev
 application:
   server_address: 0.0.0.0:10000
+  static_prefix: http://127.0.0.1:10081/
 database:
   level: 2 # 1: Silent, 2: Error, 3: Warn, 4: Info
   driver: mysql
@@ -19,3 +20,4 @@ log:
 author:
   - yangchnet
   - HT-CHEN520
+  - dadadedada666
