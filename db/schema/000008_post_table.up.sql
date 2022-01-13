@@ -1,7 +1,7 @@
-CREATE TABLE `sys_post` (
+CREATE TABLE `post` (
   `post_id` varchar(255) PRIMARY KEY NOT NULL,
   `post_name` varchar(128) DEFAULT NULL,
-  `post_code` varchar(128) DEFAULT NULL unique,
+  `post_code` varchar(128) DEFAULT NULL,
   `sort` int DEFAULT NULL,
   `status` int DEFAULT NULL,
   `remark` varchar(255) DEFAULT NULL,
