@@ -33,6 +33,7 @@ re-migrate:
 # 构建数据库、应用镜像
 build-images:
 	@cd db && make build
+	@cd static && make build-images
 	@docker build -t ferry-main .
 
 # 上线docker-compose

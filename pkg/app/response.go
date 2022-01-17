@@ -39,3 +39,7 @@ func ErrorParams(c *gin.Context, err error) {
 func OK(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, data)
 }
+
+func Custom(c *gin.Context, h gin.H) {
+	c.JSON(http.StatusOK, h)
+}
