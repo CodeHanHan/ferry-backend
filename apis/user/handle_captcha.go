@@ -28,13 +28,12 @@ func Captcha(c *gin.Context) {
 		return
 	}
 
-	app.OK(c, formUser.CaptchaResponse{
-		Code: "200",
-		Data: b64s,
-		Id:   id,
-		Msg:  "success",
+	app.Custom(c, gin.H{
+		"code": 200,
+		"data": b64s,
+		"id":   id,
+		"msg":  "success",
 	})
-
 }
 
 // Captcha godoc
