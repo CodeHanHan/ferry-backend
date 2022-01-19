@@ -341,7 +341,7 @@ var doc = `{
             }
         },
         "/login": {
-            "get": {
+            "post": {
                 "description": "获取token",
                 "produces": [
                     "application/json"
@@ -701,7 +701,7 @@ var doc = `{
                 "operationId": "post-update",
                 "parameters": [
                     {
-                        "description": "修改岗位相关信息",
+                        "description": "包含postid、post名称、post等级等相关信息",
                         "name": "post",
                         "in": "body",
                         "required": true,
@@ -2098,8 +2098,14 @@ var doc = `{
         "user.LoginResponse": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "duration": {
                     "type": "integer"
+                },
+                "expire": {
+                    "type": "string"
                 },
                 "token": {
                     "type": "string"
