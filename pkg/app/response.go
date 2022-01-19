@@ -40,6 +40,16 @@ func OK(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, data)
 }
 
+// AdaptOK 用于对接前端(暂时替代OK)
+func AdaptOK(c *gin.Context, data interface{}, msg string) {
+	var res Response
+	res.Data = data
+	if msg != "" {
+		res.Msg = msg
+	}
+	c.JSON(http.StatusOK, res.ReturnOK())
+}
+
 func Custom(c *gin.Context, h gin.H) {
 	c.JSON(http.StatusOK, h)
 }
