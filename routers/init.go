@@ -49,7 +49,7 @@ func InitNoCheckRouter(g *gin.RouterGroup) {
 
 func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGroup {
 	g := r.Group("")
-	g.GET("/login", userApis.Login)
+	g.POST("/login", userApis.Login)
 	g.GET("/logintest", userApis.LoginTest)
 
 	user.RegisterUserRouter(g, mdw...)

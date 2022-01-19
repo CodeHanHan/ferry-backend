@@ -1,16 +1,22 @@
 package user
 
+import "time"
+
 // get: /login
 type LoginRequest struct {
 	Username string `json:"username" form:"username" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required"`
-	Id       string `json:"id" form:"id" binding:"required"`
+	Id       string `json:"uuid" form:"uuid" binding:"required"`
 	Code     string `json:"code" form:"code" binding:"required"`
+	//LoginType  string `json:"logintype" form:"logintype"`
+	//RememberMe bool   `json:"rememberme" form:"rememberme"`
 }
 
 type LoginResponse struct {
-	Duration int64  `json:"duration"`
-	Token    string `json:"token" form:"token"`
+	Code     int       `json:"code" form:"code"`
+	Duration int64     `json:"duration"`
+	Expire   time.Time `json:"expire" form:"expire"`
+	Token    string    `json:"token" form:"token"`
 }
 
 // get: /logintest

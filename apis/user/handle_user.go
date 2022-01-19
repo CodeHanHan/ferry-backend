@@ -28,7 +28,7 @@ import (
 // @Failure 500 {object} app.ErrResponse
 // @Failure 400 {object} app.ErrResponse
 // @Produce  json
-// @Router /login [get]
+// @Router /login [post]
 func Login(c *gin.Context) {
 	var req formUser.LoginRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -66,7 +66,9 @@ func Login(c *gin.Context) {
 	}
 
 	app.OK(c, formUser.LoginResponse{
+		Code:     200,
 		Duration: time.Hour.Microseconds(),
+		Expire:   time.Now().Add(time.Hour),
 		Token:    jwtToken,
 	})
 }
