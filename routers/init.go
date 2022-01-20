@@ -56,5 +56,6 @@ func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGr
 	role.RegisterRoleRouter(g, mdw...)
 	dept.RegisterDeptRouter(g, mdw...)
 	post.RegisterPostRouter(g, mdw...)
+
 	return g
 }
