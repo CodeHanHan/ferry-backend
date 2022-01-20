@@ -68,3 +68,41 @@ func InitPaths(ctx context.Context, m *Menu) error {
 
 	return nil
 }
+
+// Update select a menu by id for update
+// TODO: transaction update
+func (m *Menu) Update(ctx context.Context, id int) (menu *Menu, err error) {
+	if err := db.Store.Table(MenuTableName).First(&menu, id).Error; err != nil {
+		logger.Error(ctx, err.Error()) // TODO: not found error
+		return nil, err
+	}
+
+	if err := db.Store.Table(MenuTableName).Model(&menu).Updates(&m).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+
+	if err := InitPaths(ctx, m); err != nil {
+		return nil, err
+	}
+
+	return
+}
+
+func (m *Menu) DeleteMenu(ctx context.Context, id int) error {
+	if err := db.Store.Table(MenuTableName).Delete(&Menu{}).Where("menu_id = ?", id).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (m *Menu) GetMenuById(ctx context.Context, id int) (menu *Menu, err error) {
+	if err := db.Store.Table(MenuTableName).First(&menu, id).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+
+	return
+}
