@@ -23,6 +23,103 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/menu": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "根据id获取菜单信息",
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "获取菜单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "menuName",
+                        "name": "menuName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"抱歉未找到相关信息\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/menu/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取JSON",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "修改菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/menu.Menu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"修改失败\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除数据",
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "删除菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"删除失败\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/captcha": {
             "get": {
                 "description": "获取验证码",
@@ -447,6 +544,74 @@ var doc = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/app.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取JSON",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "创建菜单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "menuName",
+                        "name": "menuName",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Path",
+                        "name": "Path",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Action",
+                        "name": "Action",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Permission",
+                        "name": "Permission",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ParentId",
+                        "name": "ParentId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "IsDel",
+                        "name": "IsDel",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"添加失败\"}",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1731,6 +1896,74 @@ var doc = `{
             "type": "object",
             "properties": {
                 "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "menu.Menu": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "breadcrumb": {
+                    "type": "string"
+                },
+                "component": {
+                    "type": "string"
+                },
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "delete_time": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "is_frame": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "type": "string"
+                },
+                "menu_type": {
+                    "type": "string"
+                },
+                "no_cache": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "paths": {
+                    "type": "string"
+                },
+                "permission": {
+                    "type": "string"
+                },
+                "sort": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "visible": {
                     "type": "string"
                 }
             }

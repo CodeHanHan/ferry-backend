@@ -24,6 +24,10 @@ INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('
 INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/post', 'GET', NULL, NULL, NULL);
 INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/post/*', 'GET', NULL, NULL, NULL);
 INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/post', 'PUT', NULL, NULL, NULL);
+INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/menu', 'POST', NULL, NULL, NULL);
+INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/menu/*', 'PUT', NULL, NULL, NULL);
+INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/menu/*', 'DELETE', NULL, NULL, NULL);
+INSERT INTO `casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', 'admin', '/api/v1/menu', 'GET', NULL, NULL, NULL);
 COMMIT;
 
 BEGIN;
