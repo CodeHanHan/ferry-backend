@@ -17,8 +17,8 @@ CREATE TABLE `menu` (
   `create_by` varchar(128) DEFAULT NULL,
   `update_by` varchar(128) DEFAULT NULL,
   `is_frame` int(1) DEFAULT '0',
-  `create_time` timestamp NULL DEFAULT NULL,
-  `update_time` timestamp NULL DEFAULT NULL,
-  `delete_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`menu_id`),
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `delete_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`menu_id`)
 );

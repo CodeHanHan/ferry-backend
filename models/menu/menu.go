@@ -95,6 +95,7 @@ func (m *Menu) DeleteMenu(ctx context.Context, id int) error {
 		return err
 	}
 
+	// 当表行数很多时，考虑使用标记删除，再定时做清理
 	return nil
 }
 

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `bind_role_menu`;
