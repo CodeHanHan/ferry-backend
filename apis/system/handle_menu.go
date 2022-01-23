@@ -1,7 +1,7 @@
-package menu
+package system
 
 import (
-	modelMenu "github.com/CodeHanHan/ferry-backend/models/menu"
+	"github.com/CodeHanHan/ferry-backend/models/system"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/sender"
@@ -26,7 +26,7 @@ import (
 // @Router /menu [post]
 // @Security Bearer
 func CreateMenu(c *gin.Context) {
-	var menu modelMenu.Menu
+	var menu system.Menu
 	if err := c.BindWith(&menu, binding.JSON); err != nil {
 		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
@@ -56,13 +56,13 @@ func CreateMenu(c *gin.Context) {
 // @Accept  application/x-www-form-urlencoded
 // @Product application/x-www-form-urlencoded
 // @Param id path int true "id"
-// @Param data body modelMenu.Menu true "body"
+// @Param data body system.Menu true "body"
 // @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "修改失败"}"
 // @Router /api/v1/menu/{id} [put]
 // @Security Bearer
 func UpdateMenu(c *gin.Context) {
-	var menu modelMenu.Menu
+	var menu system.Menu
 	if err := c.BindWith(&menu, binding.JSON); err != nil {
 		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
@@ -95,7 +95,7 @@ func UpdateMenu(c *gin.Context) {
 // @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
 // @Router /api/v1/menu/{id} [delete]
 func DeleteMenu(c *gin.Context) {
-	var menu modelMenu.Menu
+	var menu system.Menu
 	id, err := stringutil.String2Int(c.Param("id"))
 	if err != nil {
 		logger.Error(c, err.Error())
@@ -120,7 +120,7 @@ func DeleteMenu(c *gin.Context) {
 // @Router /api/v1/menu [get]
 // @Security Bearer
 func GetMenu(c *gin.Context) {
-	var menu modelMenu.Menu
+	var menu system.Menu
 	id, err := stringutil.String2Int(c.Param("id"))
 	if err != nil {
 		logger.Error(c, err.Error())
@@ -136,3 +136,36 @@ func GetMenu(c *gin.Context) {
 
 	app.AdaptOK(c, menu_, "")
 }
+
+// @Summary Menu列表数据
+// @Description 获取JSON
+// @Tags 菜单
+// @Param menuName query string false "menuName"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": -1, "message": "抱歉未找到相关信息"}"
+// @Router /api/v1/menulist [get]
+// @Security Bearer
+func GetMenuList(c *gin.Context) {
+	var menu system.Menu
+	menu.MenuName = c.Request.FormValue("menuName")
+	menu.Visible = c.Request.FormValue("visible")
+	menu.Title = c.Request.FormValue("title")
+
+	var res []*system.Menu
+	var err error
+	if menu.Title == "" {
+		res, err = menu.SetMenu(c)
+	} else {
+		res, err = menu.GetPage(c)
+	}
+	if err != nil {
+		app.InternalServerError(c)
+		return
+	}
+
+	app.AdaptOK(c, res, "")
+}
+
+// func GetMenuTreeRoleSelect(c *gin.Context) {
+
+// }

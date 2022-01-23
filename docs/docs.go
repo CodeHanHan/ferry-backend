@@ -82,7 +82,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/menu.Menu"
+                            "$ref": "#/definitions/system.Menu"
                         }
                     }
                 ],
@@ -108,6 +108,98 @@ var doc = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"删除失败\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/menulist": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取JSON",
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "Menu列表数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "menuName",
+                        "name": "menuName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"抱歉未找到相关信息\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rolemenu": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取JSON",
+                "tags": [
+                    "角色菜单"
+                ],
+                "summary": "RoleMenu列表数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "RoleId",
+                        "name": "RoleId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"抱歉未找到相关信息\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rolemenu/{id}": {
+            "delete": {
+                "description": "删除数据",
+                "tags": [
+                    "角色菜单"
+                ],
+                "summary": "删除用户菜单数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "menu_id",
+                        "name": "menu_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1900,74 +1992,6 @@ var doc = `{
                 }
             }
         },
-        "menu.Menu": {
-            "type": "object",
-            "properties": {
-                "action": {
-                    "type": "string"
-                },
-                "breadcrumb": {
-                    "type": "string"
-                },
-                "component": {
-                    "type": "string"
-                },
-                "create_by": {
-                    "type": "string"
-                },
-                "create_time": {
-                    "type": "string"
-                },
-                "delete_time": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "is_frame": {
-                    "type": "integer"
-                },
-                "menu_id": {
-                    "type": "integer"
-                },
-                "menu_name": {
-                    "type": "string"
-                },
-                "menu_type": {
-                    "type": "string"
-                },
-                "no_cache": {
-                    "type": "string"
-                },
-                "parent_id": {
-                    "type": "integer"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "paths": {
-                    "type": "string"
-                },
-                "permission": {
-                    "type": "string"
-                },
-                "sort": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "update_by": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string"
-                },
-                "visible": {
-                    "type": "string"
-                }
-            }
-        },
         "ping.PingRecord": {
             "type": "object",
             "properties": {
@@ -2175,7 +2199,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "role": {
-                    "$ref": "#/definitions/role.Role"
+                    "$ref": "#/definitions/system.Role"
                 }
             }
         },
@@ -2188,55 +2212,8 @@ var doc = `{
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/role.Role"
+                        "$ref": "#/definitions/system.Role"
                     }
-                }
-            }
-        },
-        "role.Role": {
-            "type": "object",
-            "properties": {
-                "admin": {
-                    "type": "integer"
-                },
-                "create_by": {
-                    "type": "string"
-                },
-                "create_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "delete_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "flag": {
-                    "type": "string"
-                },
-                "remark": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "string"
-                },
-                "role_key": {
-                    "type": "string"
-                },
-                "role_name": {
-                    "type": "string"
-                },
-                "role_sort": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "update_by": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
                 }
             }
         },
@@ -2292,6 +2269,135 @@ var doc = `{
             "properties": {
                 "result": {
                     "type": "string"
+                }
+            }
+        },
+        "system.Menu": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "breadcrumb": {
+                    "description": "FIXME 未知",
+                    "type": "string"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/system.Menu"
+                    }
+                },
+                "component": {
+                    "description": "组件路径",
+                    "type": "string"
+                },
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "delete_time": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "is_frame": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "type": "string"
+                },
+                "menu_type": {
+                    "description": "C: 菜单， M: 目录， F: 按钮， A: 接口",
+                    "type": "string"
+                },
+                "no_cache": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "path": {
+                    "description": "vue router",
+                    "type": "string"
+                },
+                "paths": {
+                    "description": "router from parent to current node",
+                    "type": "string"
+                },
+                "permission": {
+                    "description": "vue permission",
+                    "type": "string"
+                },
+                "sort": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "update_by": {
+                    "description": "是否外链",
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "visible": {
+                    "description": "可见性",
+                    "type": "string"
+                }
+            }
+        },
+        "system.Role": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "type": "integer"
+                },
+                "create_by": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "flag": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                },
+                "role_key": {
+                    "type": "string"
+                },
+                "role_name": {
+                    "type": "string"
+                },
+                "role_sort": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_by": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
                 }
             }
         },

@@ -1,4 +1,4 @@
-package menu
+package system
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/CodeHanHan/ferry-backend/db"
+	"github.com/CodeHanHan/ferry-backend/pkg/constants"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/utils/stringutil"
 )
@@ -17,23 +18,24 @@ type Menu struct {
 	MenuName   string     `gorm:"column:menu_name" json:"menu_name"`
 	Title      string     `gorm:"column:title" json:"title"`
 	Icon       string     `gorm:"column:icon" json:"icon"`
-	Path       string     `gorm:"column:path" json:"path"`
-	Paths      string     `gorm:"column:paths" json:"paths"`
-	MenuType   string     `gorm:"column:menu_type" json:"menu_type"`
+	Path       string     `gorm:"column:path" json:"path"`           // vue router
+	Paths      string     `gorm:"column:paths" json:"paths"`         // router from parent to current node
+	MenuType   string     `gorm:"column:menu_type" json:"menu_type"` // C: 菜单， M: 目录， F: 按钮， A: 接口
 	Action     string     `gorm:"column:action" json:"action"`
-	Permission string     `gorm:"column:permission" json:"permission"`
+	Permission string     `gorm:"column:permission" json:"permission"` // vue permission
 	ParentID   int        `gorm:"column:parent_id" json:"parent_id"`
 	NoCache    string     `gorm:"column:no_cache" json:"no_cache"`
-	Breadcrumb string     `gorm:"column:breadcrumb" json:"breadcrumb"`
-	Component  string     `gorm:"column:component" json:"component"`
+	Breadcrumb string     `gorm:"column:breadcrumb" json:"breadcrumb"` // FIXME 未知
+	Component  string     `gorm:"column:component" json:"component"`   // 组件路径
 	Sort       int        `gorm:"column:sort" json:"sort"`
-	Visible    string     `gorm:"column:visible" json:"visible"`
+	Visible    string     `gorm:"column:visible" json:"visible"` // 可见性
 	CreateBy   string     `gorm:"column:create_by" json:"create_by"`
-	UpdateBy   string     `gorm:"column:update_by" json:"update_by"`
+	UpdateBy   string     `gorm:"column:update_by" json:"update_by"` // 是否外链
 	IsFrame    int        `gorm:"column:is_frame;default:0" json:"is_frame"`
 	CreateTime *time.Time `gorm:"column:create_time" json:"create_time"`
 	UpdateTime *time.Time `gorm:"column:update_time" json:"update_time"`
 	DeleteTime *time.Time `gorm:"column:delete_time" json:"delete_time"`
+	Children   []*Menu    `json:"children"`
 }
 
 // Create creates a menu object, return its id and an error if it exists
@@ -89,6 +91,7 @@ func (m *Menu) Update(ctx context.Context, id int) (menu *Menu, err error) {
 	return
 }
 
+// DeleteMenu delete menu by given menu_id
 func (m *Menu) DeleteMenu(ctx context.Context, id int) error {
 	if err := db.Store.Table(MenuTableName).Delete(&Menu{}).Where("menu_id = ?", id).Error; err != nil {
 		logger.Error(ctx, err.Error())
@@ -99,6 +102,7 @@ func (m *Menu) DeleteMenu(ctx context.Context, id int) error {
 	return nil
 }
 
+// GetMenuById get menu by given menu_id
 func (m *Menu) GetMenuById(ctx context.Context, id int) (menu *Menu, err error) {
 	if err := db.Store.Table(MenuTableName).First(&menu, id).Error; err != nil {
 		logger.Error(ctx, err.Error())
@@ -106,4 +110,84 @@ func (m *Menu) GetMenuById(ctx context.Context, id int) (menu *Menu, err error) 
 	}
 
 	return
+}
+
+// RecursiveMenu find child menu from params menulist for params menu
+func RecursiveMenu(ctx context.Context, menulist []*Menu, menu *Menu) *Menu {
+	min := make([]*Menu, 0)
+
+	for i := 0; i < len(menulist); i++ {
+		if menu.MenuID != menulist[i].ParentID {
+			continue
+		}
+
+		mi := Menu{}
+		mi.MenuID = menulist[i].MenuID
+		mi.MenuName = menulist[i].MenuName
+		mi.Title = menulist[i].Title
+		mi.Icon = menulist[i].Icon
+		mi.Path = menulist[i].Path
+		mi.MenuType = menulist[i].MenuType
+		mi.Action = menulist[i].Action
+		mi.Permission = menulist[i].Permission
+		mi.ParentID = menulist[i].ParentID
+		mi.NoCache = menulist[i].NoCache
+		mi.Breadcrumb = menulist[i].Breadcrumb
+		mi.Component = menulist[i].Component
+		mi.Sort = menulist[i].Sort
+		mi.Visible = menulist[i].Visible
+		mi.Children = []*Menu{}
+
+		if mi.MenuType != constants.MenuType_Button {
+			ms := RecursiveMenu(ctx, menulist, &mi)
+			min = append(min, ms)
+		} else {
+			min = append(min, &mi)
+		}
+	}
+
+	menu.Children = min
+	return menu
+}
+
+// GetPages find menu list by some parameters
+func (m *Menu) GetPage(ctx context.Context) (menus []*Menu, err error) {
+	table := db.Store.Table(MenuTableName)
+	if m.MenuName != "" {
+		table = table.Where("menu_name = ?", m.MenuName)
+	}
+	if m.Title != "" {
+		table = table.Where("title like ?", "%"+m.Title+"%")
+	}
+	if m.Visible != "" {
+		table = table.Where("visible = ?", m.Visible)
+	}
+	if m.MenuType != "" {
+		table = table.Where("menu_type = ?", m.MenuType)
+	}
+
+	if err = table.Order("sort").Find(&menus).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return
+	}
+	return
+}
+
+// SetMenu find menu list by given condition and set children menu for each menu
+func (m *Menu) SetMenu(ctx context.Context) (menus []*Menu, err error) {
+	menulist, err := m.GetPage(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(menulist); i++ {
+		if menulist[i].ParentID != 0 {
+			continue
+		}
+		menu_ := RecursiveMenu(ctx, menulist, menulist[i])
+
+		menus = append(menus, menu_)
+	}
+	return
+
 }
