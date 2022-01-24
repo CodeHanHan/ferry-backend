@@ -166,6 +166,21 @@ func GetMenuList(c *gin.Context) {
 	app.AdaptOK(c, res, "")
 }
 
-// func GetMenuTreeRoleSelect(c *gin.Context) {
-
-// }
+// @Summary 获取菜单树
+// @Description 获取JSON
+// @Tags 菜单
+// @Accept  application/x-www-form-urlencoded
+// @Product application/x-www-form-urlencoded
+// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
+// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
+// @Router /api/v1/menuTreeselect [get]
+// @Security Bearer
+func GetMenuTreeelect(c *gin.Context) {
+	var data system.Menu
+	result, err := data.SetMenuLabel(c)
+	if err != nil {
+		app.Error(c, -1, err)
+		return
+	}
+	app.AdaptOK(c, result, "")
+}
