@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/CodeHanHan/ferry-backend/db"
-	modelRole "github.com/CodeHanHan/ferry-backend/models/role"
+	"github.com/CodeHanHan/ferry-backend/models/system"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/go-sql-driver/mysql"
 )
 
-func CreateRole(ctx context.Context, role *modelRole.Role) error {
-	if err := db.Store.Table(modelRole.RoleTableName).Create(role).Error; err != nil {
+func CreateRole(ctx context.Context, role *system.Role) error {
+	if err := db.Store.Table(system.RoleTableName).Create(role).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		err, ok := err.(*mysql.MySQLError)
 		if ok && err.Number == 1062 {
@@ -24,8 +24,8 @@ func CreateRole(ctx context.Context, role *modelRole.Role) error {
 }
 
 func DeleteRoleById(ctx context.Context, roleId string) error {
-	var role modelRole.Role
-	if err := db.Store.Table(modelRole.RoleTableName).Where(map[string]interface{}{"role_id": roleId}).Delete(&role).Error; err != nil {
+	var role system.Role
+	if err := db.Store.Table(system.RoleTableName).Where(map[string]interface{}{"role_id": roleId}).Delete(&role).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}
@@ -33,8 +33,8 @@ func DeleteRoleById(ctx context.Context, roleId string) error {
 	return nil
 }
 
-func SearchRole(ctx context.Context, offset, limit int) (list []*modelRole.Role, err error) {
-	if err := db.Store.Table(modelRole.RoleTableName).Offset(offset).Limit(limit).Find(&list).Error; err != nil {
+func SearchRole(ctx context.Context, offset, limit int) (list []*system.Role, err error) {
+	if err := db.Store.Table(system.RoleTableName).Offset(offset).Limit(limit).Find(&list).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func SearchRole(ctx context.Context, offset, limit int) (list []*modelRole.Role,
 	return
 }
 
-func GetRole(ctx context.Context, f *db.Filter) (role *modelRole.Role, err error) {
-	if err := db.Store.Table(modelRole.RoleTableName).Where(f.Params).Take(&role).Error; err != nil {
+func GetRole(ctx context.Context, f *db.Filter) (role *system.Role, err error) {
+	if err := db.Store.Table(system.RoleTableName).Where(f.Params).Take(&role).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return nil, err
 	}
@@ -51,8 +51,8 @@ func GetRole(ctx context.Context, f *db.Filter) (role *modelRole.Role, err error
 	return
 }
 
-func UpdateRole(ctx context.Context, role *modelRole.Role) error {
-	if err := db.Store.Table(modelRole.RoleTableName).Updates(role).Error; err != nil {
+func UpdateRole(ctx context.Context, role *system.Role) error {
+	if err := db.Store.Table(system.RoleTableName).Updates(role).Error; err != nil {
 		logger.Error(ctx, err.Error())
 		return err
 	}

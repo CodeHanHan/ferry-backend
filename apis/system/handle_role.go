@@ -1,4 +1,4 @@
-package role
+package system
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 
 	"github.com/CodeHanHan/ferry-backend/db"
 	role "github.com/CodeHanHan/ferry-backend/db/query/role"
-	modelRole "github.com/CodeHanHan/ferry-backend/models/role"
+	"github.com/CodeHanHan/ferry-backend/models/system"
 	"github.com/CodeHanHan/ferry-backend/pkg/app"
 	formRole "github.com/CodeHanHan/ferry-backend/pkg/form/role"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
@@ -47,7 +47,7 @@ func CreateRole(c *gin.Context) {
 		return
 	}
 
-	newRole := modelRole.NewRole(req.RoleName, req.Remark, modelRole.IsAdmin(*req.IsAdmin), creator)
+	newRole := system.NewRole(req.RoleName, req.Remark, system.IsAdmin(*req.IsAdmin), creator)
 	if err := role.CreateRole(c, newRole); err != nil {
 		if errors.Is(db.ErrDuplicateValue, err) {
 			app.Error(c, app.Err_Invalid_Argument, "RoleName already exists")
@@ -191,7 +191,7 @@ func UpdateRole(c *gin.Context) {
 		return
 	}
 
-	role_ := modelRole.Role(req)
+	role_ := system.Role(req)
 
 	// f := db.NewFilter().Set("role_id", role_.RoleID)
 	// if _, err := role.GetRole(c, f); err != nil {

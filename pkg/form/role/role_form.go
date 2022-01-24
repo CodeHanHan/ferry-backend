@@ -1,6 +1,6 @@
 package role
 
-import "github.com/CodeHanHan/ferry-backend/models/role"
+import "github.com/CodeHanHan/ferry-backend/models/system"
 
 type CreateRoleRequest struct {
 	RoleName string `json:"role_name" form:"role_name" binding:"required"`
@@ -28,7 +28,7 @@ type ListRoleRequest struct {
 }
 
 type ListRoleResponse struct {
-	Roles  []*role.Role
+	Roles  []*system.Role
 	Length int
 }
 
@@ -37,10 +37,10 @@ type GetRoleRequest struct {
 }
 
 type GetRoleResponse struct {
-	Role *role.Role
+	Role *system.Role
 }
 
-type UpdateRoleRequest role.Role
+type UpdateRoleRequest system.Role
 
 type UpdateRoleResponse struct {
 	Result string `json:"result"`
