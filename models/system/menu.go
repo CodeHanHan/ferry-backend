@@ -38,6 +38,12 @@ type Menu struct {
 	Children   []*Menu    `json:"children"`
 }
 
+type MenuLabel struct {
+	Id       int          `json:"id" gorm:"-"`
+	Label    string       `json:"label" gorm:"-"`
+	Children []*MenuLabel `json:"children" gorm:"-"`
+}
+
 // Create creates a menu object, return its id and an error if it exists
 func (m *Menu) Create(ctx context.Context) (id int, err error) {
 	if err := db.Store.Table(MenuTableName).Create(&m).Error; err != nil {
@@ -150,7 +156,7 @@ func RecursiveMenu(ctx context.Context, menulist []*Menu, menu *Menu) *Menu {
 	return menu
 }
 
-// GetPages find menu list by some parameters
+// GetPages find menu list by (menu_name, title, visible, menu_type)
 func (m *Menu) GetPage(ctx context.Context) (menus []*Menu, err error) {
 	table := db.Store.Table(MenuTableName)
 	if m.MenuName != "" {
@@ -164,6 +170,29 @@ func (m *Menu) GetPage(ctx context.Context) (menus []*Menu, err error) {
 	}
 	if m.MenuType != "" {
 		table = table.Where("menu_type = ?", m.MenuType)
+	}
+
+	if err = table.Order("sort").Find(&menus).Error; err != nil {
+		logger.Error(ctx, err.Error())
+		return
+	}
+	return
+}
+
+// GetPages find menu list by (menu_name, path, action, menu_type)
+func (e *Menu) Get(ctx context.Context) (menus []*Menu, err error) {
+	table := db.Store.Table(MenuTableName)
+	if e.MenuName != "" {
+		table = table.Where("menu_name = ?", e.MenuName)
+	}
+	if e.Path != "" {
+		table = table.Where("path = ?", e.Path)
+	}
+	if e.Action != "" {
+		table = table.Where("action = ?", e.Action)
+	}
+	if e.MenuType != "" {
+		table = table.Where("menu_type = ?", e.MenuType)
 	}
 
 	if err = table.Order("sort").Find(&menus).Error; err != nil {
@@ -189,5 +218,51 @@ func (m *Menu) SetMenu(ctx context.Context) (menus []*Menu, err error) {
 		menus = append(menus, menu_)
 	}
 	return
+}
 
+// SetMenuLabel set menulabel list by give menu
+func (m *Menu) SetMenuLabel(ctx context.Context) (mls []*MenuLabel, err error) {
+	menulist, err := m.Get(ctx)
+	if err != nil {
+		logger.Error(ctx, err.Error())
+		return nil, err
+	}
+
+	mls = make([]*MenuLabel, 0)
+	for i := 0; i < len(menulist); i++ {
+		if menulist[i].ParentID != 0 {
+			continue
+		}
+		ml := MenuLabel{}
+		ml.Id = menulist[i].MenuID
+		ml.Label = menulist[i].Title
+
+		menus := RecursiveMenuLabel(ctx, menulist, &ml)
+
+		mls = append(mls, menus)
+	}
+	return
+}
+
+// RecursiveMenuLabel find router tree for given menulabel
+func RecursiveMenuLabel(ctx context.Context, menulist []*Menu, menu *MenuLabel) *MenuLabel {
+	min := make([]*MenuLabel, 0)
+	for j := 0; j < len(menulist); j++ {
+		if menu.Id != menulist[j].ParentID {
+			continue
+		}
+
+		mi := MenuLabel{}
+		mi.Id = menulist[j].MenuID
+		mi.Label = menulist[j].Title
+		mi.Children = make([]*MenuLabel, 0)
+		if menulist[j].MenuType != constants.MenuType_Button {
+			ms := RecursiveMenuLabel(ctx, menulist, &mi)
+			min = append(min, ms)
+		} else {
+			min = append(min, &mi)
+		}
+	}
+	menu.Children = min
+	return menu
 }
