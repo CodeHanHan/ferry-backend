@@ -15,6 +15,7 @@ import (
 	formRole "github.com/CodeHanHan/ferry-backend/pkg/form/role"
 	"github.com/CodeHanHan/ferry-backend/pkg/logger"
 	"github.com/CodeHanHan/ferry-backend/pkg/sender"
+	"github.com/CodeHanHan/ferry-backend/utils/stringutil"
 )
 
 var TimeNow = time.Now()
@@ -58,7 +59,7 @@ func CreateRole(c *gin.Context) {
 	}
 
 	resp := formRole.CreateRoleResponse{
-		RoleID:   newRole.RoleID,
+		// RoleID:   newRole.RoleID,
 		RoleName: newRole.RoleName,
 		RoleKey:  newRole.RoleKey,
 	}
@@ -111,25 +112,28 @@ func DeleteRole(c *gin.Context) {
 // @Router /role [get]
 // @Security BearerAuth
 func ListRoles(c *gin.Context) {
-	var req formRole.ListRoleRequest
-	if err := c.ShouldBind(&req); err != nil {
+	var limit, offset int
+	var err error
+	limit, err = stringutil.String2Int(c.Request.FormValue("pageSize"))
+	offset, err = stringutil.String2Int(c.Request.FormValue("pageIndex"))
+	if err != nil {
 		logger.ErrorParams(c, err)
 		app.ErrorParams(c, err)
 		return
 	}
 
-	list, err := role.SearchRole(c, *req.Offset, req.Limit)
+	var r system.Role
+	r.RoleKey = c.Request.FormValue("roleKey")
+	r.RoleName = c.Request.FormValue("roleName")
+	r.Status = c.Request.FormValue("status")
+
+	roles, count, err := r.GetPage(c, limit, offset)
 	if err != nil {
 		app.InternalServerError(c)
 		return
 	}
 
-	resp := formRole.ListRoleResponse{
-		Roles:  list,
-		Length: len(list),
-	}
-
-	app.OK(c, resp)
+	app.PageOK(c, roles, int(count), offset, limit, "")
 }
 
 // GetRole godoc

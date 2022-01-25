@@ -5,10 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterPageRouter(v1 *gin.RouterGroup, mdw ...gin.HandlerFunc) {
-	v1auth := v1.Use(mdw...)
+func RegisterPageRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
+	listGroup := g.Use(mdw...)
 	{
-		v1auth.GET("/menulist", system.GetMenuList)
+		listGroup.GET("/menulist", system.GetMenuList)
+		listGroup.GET("/rolelist", system.ListRoles)
 	}
 }
 

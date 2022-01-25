@@ -120,6 +120,31 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/menuTreeselect": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取JSON",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "获取菜单树",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": -1, \"message\": \"添加失败\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/menulist": {
             "get": {
                 "security": [
@@ -2234,14 +2259,29 @@ var doc = `{
                     "type": "string",
                     "default": "2000-01-01 00:00:00"
                 },
+                "deptIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "flag": {
+                    "type": "string"
+                },
+                "menuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "params": {
                     "type": "string"
                 },
                 "remark": {
                     "type": "string"
                 },
                 "role_id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "role_key": {
                     "type": "string"
@@ -2253,7 +2293,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "update_by": {
                     "type": "string"
@@ -2371,14 +2411,29 @@ var doc = `{
                     "type": "string",
                     "default": "2000-01-01 00:00:00"
                 },
+                "deptIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "flag": {
+                    "type": "string"
+                },
+                "menuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "params": {
                     "type": "string"
                 },
                 "remark": {
                     "type": "string"
                 },
                 "role_id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "role_key": {
                     "type": "string"
@@ -2390,7 +2445,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "update_by": {
                     "type": "string"
