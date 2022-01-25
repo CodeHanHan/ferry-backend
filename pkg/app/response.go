@@ -53,3 +53,16 @@ func AdaptOK(c *gin.Context, data interface{}, msg string) {
 func Custom(c *gin.Context, h gin.H) {
 	c.JSON(http.StatusOK, h)
 }
+
+// 分页数据处理
+func PageOK(c *gin.Context, result interface{}, count int, pageIndex int, pageSize int, msg string) {
+	var res PageResponse
+	res.Data.List = result
+	res.Data.Count = count
+	res.Data.PageIndex = pageIndex
+	res.Data.PageSize = pageSize
+	if msg != "" {
+		res.Msg = msg
+	}
+	c.JSON(http.StatusOK, res.ReturnOK())
+}
