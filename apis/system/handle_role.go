@@ -211,7 +211,7 @@ func UpdateRole(c *gin.Context) {
 	_, err := role.GetRole(c, f)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			app.Errorf(c, app.Err_Not_found, "查询失败，未找到该记录值: %s", req.RoleID)
+			app.Errorf(c, app.Err_Not_found, "查询失败，未找到该记录值: %v", req.RoleID)
 			return
 		}
 		app.InternalServerError(c)
