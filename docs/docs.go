@@ -911,243 +911,36 @@ var doc = `{
             }
         },
         "/post": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "根据offset和limit查询岗位列表",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "post"
-                ],
-                "summary": "查询岗位列表",
-                "operationId": "post-list",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "偏移",
-                        "name": "offset",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "限制",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/post.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "更新岗位信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "post"
-                ],
-                "summary": "更新岗位",
-                "operationId": "post-update",
-                "parameters": [
-                    {
-                        "description": "包含postid、post名称、post等级等相关信息",
-                        "name": "post",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/post.UpdatePostRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/post.UpdatePostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
-                "description": "根据PostName和PostCode创建岗位信息",
-                "produces": [
+                "description": "获取JSON",
+                "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "post"
+                    "职位"
                 ],
-                "summary": "创建岗位",
-                "operationId": "post-create",
+                "summary": "添加职位",
                 "parameters": [
                     {
-                        "description": "post名称和post等级",
-                        "name": "post",
+                        "description": "data",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/post.CreatePostRequest"
+                            "$ref": "#/definitions/system.Post"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "{\"code\": -1, \"message\": \"添加失败\"}",
                         "schema": {
-                            "$ref": "#/definitions/post.CreatePostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/post/{post_id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "根据岗位id查询岗位信息",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "post"
-                ],
-                "summary": "查询岗位",
-                "operationId": "post-get",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "部门id",
-                        "name": "post_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/post.GetPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "根据PostID删除岗位",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "post"
-                ],
-                "summary": "删除岗位",
-                "operationId": "post-delete",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "岗位唯一id",
-                        "name": "post_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/post.DeletePostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.ErrResponse"
+                            "type": "string"
                         }
                     }
                 }
@@ -2034,152 +1827,6 @@ var doc = `{
                 }
             }
         },
-        "post.CreatePostRequest": {
-            "type": "object",
-            "required": [
-                "post_code",
-                "post_name"
-            ],
-            "properties": {
-                "post_code": {
-                    "type": "string"
-                },
-                "post_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "post.CreatePostResponse": {
-            "type": "object",
-            "properties": {
-                "post_id": {
-                    "type": "string"
-                },
-                "post_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "post.DeletePostResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
-        "post.GetPostResponse": {
-            "type": "object",
-            "properties": {
-                "post": {
-                    "$ref": "#/definitions/post.Post"
-                }
-            }
-        },
-        "post.ListPostResponse": {
-            "type": "object",
-            "properties": {
-                "length": {
-                    "type": "integer"
-                },
-                "post": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/post.Post"
-                    }
-                }
-            }
-        },
-        "post.Post": {
-            "type": "object",
-            "properties": {
-                "create_by": {
-                    "type": "string"
-                },
-                "create_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "delete_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "post_code": {
-                    "type": "string"
-                },
-                "post_id": {
-                    "type": "string"
-                },
-                "post_name": {
-                    "type": "string"
-                },
-                "remark": {
-                    "type": "string"
-                },
-                "sort": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "update_by": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                }
-            }
-        },
-        "post.UpdatePostRequest": {
-            "type": "object",
-            "properties": {
-                "create_by": {
-                    "type": "string"
-                },
-                "create_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "delete_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                },
-                "post_code": {
-                    "type": "string"
-                },
-                "post_id": {
-                    "type": "string"
-                },
-                "post_name": {
-                    "type": "string"
-                },
-                "remark": {
-                    "type": "string"
-                },
-                "sort": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "update_by": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string",
-                    "default": "2000-01-01 00:00:00"
-                }
-            }
-        },
-        "post.UpdatePostResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "type": "string"
-                }
-            }
-        },
         "role.CreateRoleRequest": {
             "type": "object",
             "required": [
@@ -2391,6 +2038,56 @@ var doc = `{
                 "visible": {
                     "description": "可见性",
                     "type": "string"
+                }
+            }
+        },
+        "system.Post": {
+            "type": "object",
+            "properties": {
+                "createBy": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "delete_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
+                },
+                "params": {
+                    "type": "string"
+                },
+                "postCode": {
+                    "description": "岗位代码",
+                    "type": "string"
+                },
+                "postId": {
+                    "description": "岗位编号",
+                    "type": "integer"
+                },
+                "postName": {
+                    "description": "岗位名称",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "sort": {
+                    "description": "岗位排序",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态",
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string",
+                    "default": "2000-01-01 00:00:00"
                 }
             }
         },

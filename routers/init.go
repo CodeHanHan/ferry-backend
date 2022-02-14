@@ -11,7 +11,6 @@ import (
 	"github.com/CodeHanHan/ferry-backend/pkg/pi"
 	"github.com/CodeHanHan/ferry-backend/routers/dept"
 	"github.com/CodeHanHan/ferry-backend/routers/ping"
-	"github.com/CodeHanHan/ferry-backend/routers/post"
 	"github.com/CodeHanHan/ferry-backend/routers/system"
 	"github.com/CodeHanHan/ferry-backend/routers/user"
 )
@@ -54,12 +53,13 @@ func InitAuthSysRouter(r *gin.RouterGroup, mdw ...gin.HandlerFunc) *gin.RouterGr
 
 	user.RegisterUserRouter(g, mdw...)
 	dept.RegisterDeptRouter(g, mdw...)
-	post.RegisterPostRouter(g, mdw...)
+	// post.RegisterPostRouter(g, mdw...)
 
 	system.RegisterMenuRouter(g, mdw...)
 	system.RegisterRoleMenuRouter(g, mdw...)
 	system.RegisterPageRouter(g, mdw...)
 	system.RegisterRoleRouter(g, mdw...)
+	system.RegisterPostRouter(g, mdw...)
 
 	return g
 }

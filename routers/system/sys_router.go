@@ -41,3 +41,10 @@ func RegisterRoleRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
 		roleGroup.PUT("", system.UpdateRole)
 	}
 }
+
+func RegisterPostRouter(g *gin.RouterGroup, mdw ...gin.HandlerFunc) {
+	postGroup := g.Group("/post", mdw...)
+	{
+		postGroup.POST("", system.InsertPost)
+	}
+}
